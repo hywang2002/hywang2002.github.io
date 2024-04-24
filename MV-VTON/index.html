@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
 </head>
 
 <body>
@@ -46,7 +49,7 @@
         clothing. However, most existing methods solely focus on the frontal try-on using the frontal clothing. When the
         views of the clothing and person are significantly inconsistent, particularly when the person's view is
         non-frontal, the results are unsatisfactory. To address this challenge, we introduce
-        <b>M</b>ulti-<b>V</b>iew <b>V</b>irtual <b>T</b>ry-<b>ON</b> (MV-VTON), which aims to reconstruct the
+        <b>M</b>ulti-<b>V</b>iew <b>V</b>irtual <b>T</b>ry-<b>ON</b> <b>(MV-VTON)</b>, which aims to reconstruct the
         dressing results of a person from multiple views using the given clothes. On the one hand, given that
         single-view clothes provide insufficient information for MV-VTON, we instead employ two images, <i>i.e.</i>, the
         frontal and back views of the clothing, to encompass the complete view as much as possible. On the other hand,
@@ -56,11 +59,11 @@
         local clothing feature extraction, respectively. This ensures that the clothing features are roughly fit to the
         person's view. Subsequently, we suggest a joint attention block to align and fuse clothing features with person
         features. Additionally, we collect a MV-VTON dataset, <i>i.e.</i>, <b>M</b>ulti-<b>V</b>iew <b>G</b>arment
-        (MVG), in which each person has multiple photos with diverse views and poses. Experiments show that the proposed
+        <b>(MVG)</b>, in which each person has multiple photos with diverse views and poses. Experiments show that the proposed
         method not only achieves state-of-the-art results on MV-VTON task using our MVG dataset, but also has
         superiority on frontal-view virtual try-on task using VITON-HD and DressCode datasets. Codes and datasets will
         be publicly released at <a
-                href="https://github.com/hywang2002/MV-VTON">MV-VTON</a></p>
+                href="https://github.com/hywang2002/MV-VTON">MV-VTON</a>.</p>
 </div>
 
 <!-- <div class="content">
@@ -90,7 +93,7 @@
         lost and
         erroneous detailed texture information in \( c_g \) by selective fusion.</p>
     <br>
-    <img class="summary-img" src="./MV_files/jab.png" style="width:100%;"> <br>
+    <img class="summary-img" src="./MV_files/jab.png" style="width:50%;"> <br>
 </div>
 
 <div class="content">
@@ -199,7 +202,7 @@
     <br>
     <br>
 
-    <h2>High Resolution Results</h2>
+    <h2>Qualitative Comparisons</h2>
     <center>
         <div id="myCarousel3" class="carousel slide" data-ride="carousel">
             <!-- Indicators -->
