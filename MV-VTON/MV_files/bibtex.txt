@@ -1,8 +1,8 @@
-@misc{kim2023stableviton,
-      title={StableVITON: Learning Semantic Correspondence with Latent Diffusion Model for Virtual Try-On}, 
-      author={Jeongho Kim and Gyojung Gu and Minho Park and Sunghyun Park and Jaegul Choo},
-      year={2023},
-      eprint={2312.01725},
+@misc{wang2024mvvton,
+      title={MV-VTON: Multi-View Virtual Try-On with Diffusion Models}, 
+      author={Haoyu Wang and Zhilu Zhang and Donglin Di and Shiliang Zhang and Wangmeng Zuo},
+      year={2024},
+      eprint={2404.17364},
       archivePrefix={arXiv},
       primaryClass={cs.CV}
 }
