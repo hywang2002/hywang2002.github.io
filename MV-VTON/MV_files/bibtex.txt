@@ -1,8 +1,6 @@
-@misc{wang2024mvvton,
-      title={MV-VTON: Multi-View Virtual Try-On with Diffusion Models}, 
-      author={Haoyu Wang and Zhilu Zhang and Donglin Di and Shiliang Zhang and Wangmeng Zuo},
-      year={2024},
-      eprint={2404.17364},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@article{wang2024mv,
+  title={MV-VTON: Multi-View Virtual Try-On with Diffusion Models},
+  author={Wang, Haoyu and Zhang, Zhilu and Di, Donglin and Zhang, Shiliang and Zuo, Wangmeng},
+  journal={arXiv preprint arXiv:2404.17364},
+  year={2024}
 }
