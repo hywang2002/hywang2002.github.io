@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>MV-VTON</title>
+    <title>MoCo</title>
     <link href="./MV_files/style.css" rel="stylesheet">
     <script type="text/javascript" src="./MV_files/jquery.mlens-1.0.min.js"></script>
     <script type="text/javascript" src="./MV_files/jquery.js"></script>
@@ -17,7 +17,7 @@
 <body>
 
 <div class="content">
-    <h1><strong>MV-VTON: Multi-View Virtual Try-On with Diffusion Models</strong></h1>
+    <h1><strong>MoCo: Multi-View Virtual Try-On with Diffusion Models</strong></h1>
     <p id="authors"><a href="https://github.com/hywang2002/">Haoyu Wang</a><sup style="margin-left: -7px;">1,2</sup><a
             href="https://scholar.google.com/citations?hl=en&user=8pIq2N0AAAAJ">Zhilu Zhang</a><sup
             style="margin-left: -7px;">1</sup><a
@@ -38,7 +38,7 @@
     <font size="+2">
         <p style="text-align: center;font-size: 25px;">
             <a href="https://arxiv.org/abs/2404.17364" target="_blank">[Paper]</a> &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="https://github.com/hywang2002/MV-VTON" target="_blank">[Code]</a> &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="https://github.com/hywang2002/MoCo" target="_blank">[Code]</a> &nbsp;&nbsp;&nbsp;&nbsp;
             <a href="MV_files/bibtex.txt" target="_blank">[BibTeX]</a>
         </p>
     </font>
@@ -51,21 +51,21 @@
         clothing. However, most existing methods solely focus on the frontal try-on using the frontal clothing. When the
         views of the clothing and person are significantly inconsistent, particularly when the person's view is
         non-frontal, the results are unsatisfactory. To address this challenge, we introduce
-        <b>M</b>ulti-<b>V</b>iew <b>V</b>irtual <b>T</b>ry-<b>ON</b> <b>(MV-VTON)</b>, which aims to reconstruct the
+        <b>M</b>ulti-<b>V</b>iew <b>V</b>irtual <b>T</b>ry-<b>ON</b> <b>(MoCo)</b>, which aims to reconstruct the
         dressing results of a person from multiple views using the given clothes. On the one hand, given that
-        single-view clothes provide insufficient information for MV-VTON, we instead employ two images, <i>i.e.</i>, the
+        single-view clothes provide insufficient information for MoCo, we instead employ two images, <i>i.e.</i>, the
         frontal and back views of the clothing, to encompass the complete view as much as possible. On the other hand,
         the
-        diffusion models that have demonstrated superior abilities are adopted to perform our MV-VTON. In particular, we
+        diffusion models that have demonstrated superior abilities are adopted to perform our MoCo. In particular, we
         propose a view-adaptive selection method where hard-selection and soft-selection are applied to the global and
         local clothing feature extraction, respectively. This ensures that the clothing features are roughly fit to the
         person's view. Subsequently, we suggest a joint attention block to align and fuse clothing features with person
-        features. Additionally, we collect a MV-VTON dataset, <i>i.e.</i>, <b>M</b>ulti-<b>V</b>iew <b>G</b>arment
+        features. Additionally, we collect a MoCo dataset, <i>i.e.</i>, <b>M</b>ulti-<b>V</b>iew <b>G</b>arment
         <b>(MVG)</b>, in which each person has multiple photos with diverse views and poses. Experiments show that the proposed
-        method not only achieves state-of-the-art results on MV-VTON task using our MVG dataset, but also has
+        method not only achieves state-of-the-art results on MoCo task using our MVG dataset, but also has
         superiority on frontal-view virtual try-on task using VITON-HD and DressCode datasets. Codes and datasets will
         be publicly released at <a
-                href="https://github.com/hywang2002/MV-VTON">MV-VTON</a>.</p>
+                href="https://github.com/hywang2002/MoCo">MoCo</a>.</p>
 </div>
 
 <!-- <div class="content">
@@ -77,7 +77,7 @@
 
 <div class="content">
     <h2>Method</h2>
-    <p> (a) MV-VTON encodes frontal and back view clothing into global features using the CLIP image encoder and
+    <p> (a) MoCo encodes frontal and back view clothing into global features using the CLIP image encoder and
         extracts multi-scale local features through U-Net encoder's trainable copy. Both features act as conditional
         inputs for the decoder of U-Net. Besides, both features are selectively extracted through view-adaptive
         selection mechanism. Specifically, hard-selection is performed on the clothing images under the frontal and
@@ -284,13 +284,13 @@
 <div class="content">
     <h2>Model Weights</h2>
     You can download it from <a
-        href="https://github.com/hywang2002/MV-VTON">link</a>.
+        href="https://github.com/hywang2002/MoCo">link</a>.
 </div>
 
 <div class="content">
     <h2>BibTex</h2>
     <code> @article{wang2024mv,<br>
-        &nbsp;&nbsp;title={MV-VTON: Multi-View Virtual Try-On with Diffusion Models},<br>
+        &nbsp;&nbsp;title={MoCo: Multi-View Virtual Try-On with Diffusion Models},<br>
         &nbsp;&nbsp;author={Wang, Haoyu and Zhang, Zhilu and Di, Donglin and Zhang, Shiliang and Zuo, Wangmeng},<br>
         &nbsp;&nbsp;journal={arXiv preprint arXiv:2404.17364},<br>
         &nbsp;&nbsp;year={2024}<br>
