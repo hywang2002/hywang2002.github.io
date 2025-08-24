@@ -17,21 +17,28 @@
 <body>
 
 <div class="content">
-    <h1><strong>MoCo: Multi-View Virtual Try-On with Diffusion Models</strong></h1>
+    <h1><strong>MoCo: Motion-Consistent Human Video Generation
+    via Structure-Appearance Decoupling</strong></h1>
     <p id="authors"><a href="https://github.com/hywang2002/">Haoyu Wang</a><sup style="margin-left: -7px;">1,2</sup><a
-            href="https://scholar.google.com/citations?hl=en&user=8pIq2N0AAAAJ">Zhilu Zhang</a><sup
+            href="">Hao Tang</a><sup
             style="margin-left: -7px;">1</sup><a
             href="https://scholar.google.com/citations?hl=en&user=L8tcNioAAAAJ">Donglin Di</a><sup
-            style="margin-left: -7px;">3</sup><a
-            href="https://scholar.google.com/citations?hl=en&user=7phvKK4AAAAJ">Shiliang Zhang</a><sup
             style="margin-left: -7px;">2</sup><a
+            href="https://scholar.google.com/citations?hl=en&user=8pIq2N0AAAAJ">Zhilu Zhang</a><sup
+            style="margin-left: -7px;">3</sup><a
             href="https://scholar.google.com/citations?hl=en&user=rUOpCEYAAAAJ">Wangmeng Zuo</a><sup
+            style="margin-left: -7px;">3</sup><a
+            href="">Feng Gao</a><sup
+            style="margin-left: -7px;">1</sup><a
+            href="">Siwei Ma</a><sup
+            style="margin-left: -7px;">1</sup><a
+            href="https://scholar.google.com/citations?hl=en&user=7phvKK4AAAAJ">Shiliang Zhang</a><sup
             style="margin-left: -7px;">1</sup><br>
         <br>
         <!--        <span style="font-size: 24px">KAIST-->
-        <span style="font-size: 20px;"><sup>1</sup>Harbin Institute of Technology</span> &nbsp;<span
-                style="font-size: 20px;"><sup>2</sup>Peking University</span> &nbsp;
-        <span style="font-size: 20px;"><sup>3</sup>Li Auto</span>
+        <span style="font-size: 20px;"><sup>1</sup>Peking University</span> &nbsp;<span
+                style="font-size: 20px;"><sup>2</sup>Li Auto</span> &nbsp;
+        <span style="font-size: 20px;"><sup>3</sup>Harbin Institute of Technology</span>
         </span></p>
     <br>
     <img src="./MV_files/motivation.jpg" class="teaser-gif" style="width:100%;"><br>
@@ -45,7 +52,7 @@
     <font size="+2">
         <p style="text-align: center;font-size: 25px;">
             <a href="https://arxiv.org/abs/2404.17364" target="_blank">[Paper]</a> &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="https://github.com/hywang2002/MoCo" target="_blank">[Code]</a> &nbsp;&nbsp;&nbsp;&nbsp;
+            <!-- <a href="https://github.com/hywang2002/MoCo" target="_blank">[Code]</a> &nbsp;&nbsp;&nbsp;&nbsp; -->
             <a href="MV_files/bibtex.txt" target="_blank">[BibTeX]</a>
         </p>
     </font>
@@ -54,25 +61,9 @@
 
 <div class="content">
     <h2>Abstract</h2>
-    <p>The goal of image-based virtual try-on is to generate an image of the target person naturally wearing the given
-        clothing. However, most existing methods solely focus on the frontal try-on using the frontal clothing. When the
-        views of the clothing and person are significantly inconsistent, particularly when the person's view is
-        non-frontal, the results are unsatisfactory. To address this challenge, we introduce
-        <b>M</b>ulti-<b>V</b>iew <b>V</b>irtual <b>T</b>ry-<b>ON</b> <b>(MoCo)</b>, which aims to reconstruct the
-        dressing results of a person from multiple views using the given clothes. On the one hand, given that
-        single-view clothes provide insufficient information for MoCo, we instead employ two images, <i>i.e.</i>, the
-        frontal and back views of the clothing, to encompass the complete view as much as possible. On the other hand,
-        the
-        diffusion models that have demonstrated superior abilities are adopted to perform our MoCo. In particular, we
-        propose a view-adaptive selection method where hard-selection and soft-selection are applied to the global and
-        local clothing feature extraction, respectively. This ensures that the clothing features are roughly fit to the
-        person's view. Subsequently, we suggest a joint attention block to align and fuse clothing features with person
-        features. Additionally, we collect a MoCo dataset, <i>i.e.</i>, <b>M</b>ulti-<b>V</b>iew <b>G</b>arment
-        <b>(MVG)</b>, in which each person has multiple photos with diverse views and poses. Experiments show that the proposed
-        method not only achieves state-of-the-art results on MoCo task using our MVG dataset, but also has
-        superiority on frontal-view virtual try-on task using VITON-HD and DressCode datasets. Codes and datasets will
-        be publicly released at <a
-                href="https://github.com/hywang2002/MoCo">MoCo</a>.</p>
+    <p>Generating human videos with consistent motion from text prompts remains a significant challenge, particularly for
+    whole-body or long-range motion. Existing video generation models prioritize appearance fidelity, resulting in unrealistic or physically implausible human movements with poor structural coherence. Additionally, most existing human video datasets primarily focus on facial or upper-body motions, or consist of vertically oriented dance videos, limiting the scope of corresponding generation methods to simple movements. To overcome these challenges, we propose MoCo, which decouples the process of human video generation into two
+    components: structure generation and appearance generation. Specifically, our method first employs an efficient 3D structure generator to produce a human motion sequence from a text prompt. The remaining video appearance is then synthesized under the guidance of the generated structural sequence. To improve fine-grained control over sparse human structures, we introduce Human-Aware Dynamic Control modules and integrate dense tracking constraints during training. Furthermore, recognizing the limitations of existing datasets, we construct a large-scale whole-body human video dataset featuring complex and diverse motions. Extensive experiments demonstrate that MoCo outperforms existing approaches in generating realistic and structurally coherent human videos.</p>
 </div>
 
 <!-- <div class="content">
@@ -84,17 +75,14 @@
 
 <div class="content">
     <h2>Method</h2>
-    <p> (a) MoCo encodes frontal and back view clothing into global features using the CLIP image encoder and
-        extracts multi-scale local features through U-Net encoder's trainable copy. Both features act as conditional
-        inputs for the decoder of U-Net. Besides, both features are selectively extracted through view-adaptive
-        selection mechanism. Specifically, hard-selection is performed on the clothing images under the frontal and
-        back view, while (b) soft-selection modulates the clothing features on frontal and back view, respectively,
-        based on the similarity between the clothing's pose and the person's pose. Then the features from both views are
-        concatenated in the channel dimension.</p>
+    <p> Overview of the proposed MoCo. Given a text prompt, we first employ a 3D structure generator to produce a structure
+    sequence, which is subsequently encoded as structural features to guide the appearance generation process. To further
+    enhance motion consistency, we introduce human-aware dynamic control modules and incorporate a dense tracking loss
+    during training.</p>
     <br>
-    <img class="summary-img" src="./MV_files/framework.png" style="width:100%;"> <br>
+    <img class="summary-img" src="./MV_files/moco_framework.jpg" style="width:100%;"> <br>
 
-    <p> Global clothing features \( c_g \) provide identical conditions for blocks at each scale of U-Net, and
+    <!-- <p> Global clothing features \( c_g \) provide identical conditions for blocks at each scale of U-Net, and
         multi-scale
         local clothing features \( c_l \) allow for reconstructing more accurate details. Therefore, joint attention
         blocks are proposed to align \( c_g \) and \( c_l \) with the current person features. Additionally, to retain
@@ -102,7 +90,7 @@
         lost and
         erroneous detailed texture information in \( c_g \) by selective fusion.</p>
     <br>
-    <img class="summary-img" src="./MV_files/jab2.png" style="width:70%;"> <br>
+    <img class="summary-img" src="./MV_files/jab2.png" style="width:70%;"> <br> -->
 </div>
 
 <div class="content">
