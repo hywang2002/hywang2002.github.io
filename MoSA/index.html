@@ -209,43 +209,87 @@
     <p> Since existing text-driven human video generation methods (Move-in-2D and HumanDreamer) are not yet open source, we perform a visual comparison based on their released videos, if accessible.</p>
     <p> <strong>Text prompt:</strong> <strong><em>"A man hitting a tennis return."</em></strong> </p>
 
-    <!--  -->
-    <div style="display: flex; justify-content: space-around; align-items: flex-start; gap: 20px;">
-    
-        <!-- 1 -->
-        <div style="text-align: center; flex: 1;">
-            <div style="font-weight: bold; margin-bottom: 8px;">Move-in-2D</div>
-            <video src="./MV_files/mosa_mvin2d.mp4" style="width:100%; border-radius: 8px;" controls autoplay loop muted></video>
+    <!-- ✅ 局部样式：只影响本段视频布局 -->
+    <style>
+        /* 用唯一选择器名，避免全局污染 */
+        .video-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .video-box {
+            text-align: center;
+            flex: 1;
+        }
+
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        /* 统一视频显示尺寸和比例 */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 3 / 2;
+            /* 保持统一宽高比，可改成 4/3 或 1/1 */
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 填充且保持比例 */
+        }
+    </style>
+
+    <!-- 第一行 -->
+    <div class="video-row">
+        <div class="video-box">
+            <div class="video-title">Move-in-2D</div>
+            <div class="video-wrapper">
+                <video src="./MV_files/mosa_mvin2d.mp4" controls autoplay loop muted></video>
+            </div>
         </div>
-    
-        <!-- 2 -->
-        <div style="text-align: center; flex: 1;">
-            <div style="font-weight: bold; margin-bottom: 8px;">Ours</div>
-            <video src="./MV_files/mosa_mvin2d_ours.mp4" style="width:100%; border-radius: 8px;" controls autoplay loop
-                muted></video>
+
+        <div class="video-box">
+            <div class="video-title">Ours</div>
+            <div class="video-wrapper">
+                <video src="./MV_files/mosa_mvin2d_ours.mp4" controls autoplay loop muted></video>
+            </div>
         </div>
-    
     </div>
 
-    <p> <strong>Text prompt:</strong> <strong><em>"A man is performing a yoga pose on a mat, and he is seen moving his legs ..."</em></strong> </p>
-    
-    <!--  -->
-    <div style="display: flex; justify-content: space-around; align-items: flex-start; gap: 20px;">
-    
-        <!-- 1 -->
-        <div style="text-align: center; flex: 1;">
-            <div style="font-weight: bold; margin-bottom: 8px;">HumanDreamer</div>
-            <video src="./MV_files/mosa_humandreamer.mp4" style="width:100%; border-radius: 8px;" controls autoplay loop muted></video>
+    <p>
+        <strong>Text prompt:</strong>
+        <strong><em>"A man is performing a yoga pose on a mat, and he is seen moving his legs ..."</em></strong>
+    </p>
+
+    <!-- 第二行 -->
+    <div class="video-row">
+        <div class="video-box">
+            <div class="video-title">HumanDreamer</div>
+            <div class="video-wrapper">
+                <video src="./MV_files/mosa_humandreamer.mp4" controls autoplay loop muted></video>
+            </div>
         </div>
-    
-        <!-- 2 -->
-        <div style="text-align: center; flex: 1;">
-            <div style="font-weight: bold; margin-bottom: 8px;">Ours</div>
-            <video src="./MV_files/mosa_humandreamer_ours.mp4" style="width:100%; border-radius: 8px;" controls autoplay loop
-                muted></video>
+
+        <div class="video-box">
+            <div class="video-title">Ours</div>
+            <div class="video-wrapper">
+                <video src="./MV_files/mosa_humandreamer_ours.mp4" controls autoplay loop muted></video>
+            </div>
         </div>
-    
     </div>
+
 
     <br>
     <br>
