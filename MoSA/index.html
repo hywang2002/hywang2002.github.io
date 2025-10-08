@@ -207,9 +207,45 @@
 
     <h2>Comparison with Text-Driven Human Video Generation Models</h2>
     <p> Since existing text-driven human video generation methods (Move-in-2D and HumanDreamer) are not yet open source, we perform a visual comparison based on their released videos, if accessible.</p>
-    <br>
-    <video class="summary-video" src="./MV_files/cmp4.mp4" style="width:100%;" controls autoplay loop muted></video>
-    <br>
+    <p> <strong>Text prompt:</strong> <strong><em>"A man hitting a tennis return."</em></strong> </p>
+
+    <!--  -->
+    <div style="display: flex; justify-content: space-around; align-items: flex-start; gap: 20px;">
+    
+        <!-- 1 -->
+        <div style="text-align: center; flex: 1;">
+            <div style="font-weight: bold; margin-bottom: 8px;">Move-in-2D</div>
+            <video src="./MV_files/mosa_mvin2d.mp4" style="width:100%; border-radius: 8px;" controls autoplay loop muted></video>
+        </div>
+    
+        <!-- 2 -->
+        <div style="text-align: center; flex: 1;">
+            <div style="font-weight: bold; margin-bottom: 8px;">Ours</div>
+            <video src="./MV_files/mosa_mvin2d_ours.mp4" style="width:100%; border-radius: 8px;" controls autoplay loop
+                muted></video>
+        </div>
+    
+    </div>
+
+    <p> <strong>Text prompt:</strong> <strong><em>"A man is performing a yoga pose on a mat, and he is seen moving his legs ..."</em></strong> </p>
+    
+    <!--  -->
+    <div style="display: flex; justify-content: space-around; align-items: flex-start; gap: 20px;">
+    
+        <!-- 1 -->
+        <div style="text-align: center; flex: 1;">
+            <div style="font-weight: bold; margin-bottom: 8px;">HumanDreamer</div>
+            <video src="./MV_files/mosa_humandreamer.mp4" style="width:100%; border-radius: 8px;" controls autoplay loop muted></video>
+        </div>
+    
+        <!-- 2 -->
+        <div style="text-align: center; flex: 1;">
+            <div style="font-weight: bold; margin-bottom: 8px;">Ours</div>
+            <video src="./MV_files/mosa_humandreamer_ours.mp4" style="width:100%; border-radius: 8px;" controls autoplay loop
+                muted></video>
+        </div>
+    
+    </div>
 
     <br>
     <br>
