@@ -1,4 +1,4 @@
-@article{wang2025moco,
+@article{wang2025mosa,
   title={MoSA: Motion-Coherent Human Video Generation via Structure-Appearance Decoupling},
   author={Haoyu Wang, Hao Tang, Donglin Di, Zhilu Zhang, Wangmeng Zuo, Feng Gao, Siwei Ma, Shiliang Zhang},
   journal={arXiv preprint arXiv:2508.17404},
