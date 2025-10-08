@@ -1,0 +1,372 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>MoCo</title>
+    <link href="./MV_files/style.css" rel="stylesheet">
+    <script type="text/javascript" src="./MV_files/jquery.mlens-1.0.min.js"></script>
+    <script type="text/javascript" src="./MV_files/jquery.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</head>
+
+<body>
+
+<div class="content">
+    <h1><strong>MoCo: Motion-Consistent Human Video Generation
+    via Structure-Appearance Decoupling</strong></h1>
+    <p id="authors"><a href="https://github.com/hywang2002/">Haoyu Wang</a><sup style="margin-left: -7px;">1,2</sup><a
+            href="">Hao Tang</a><sup
+            style="margin-left: -7px;">1</sup><a
+            href="https://scholar.google.com/citations?hl=en&user=L8tcNioAAAAJ">Donglin Di</a><sup
+            style="margin-left: -7px;">2</sup><a
+            href="https://scholar.google.com/citations?hl=en&user=8pIq2N0AAAAJ">Zhilu Zhang</a><sup
+            style="margin-left: -7px;">3</sup><a
+            href="https://scholar.google.com/citations?hl=en&user=rUOpCEYAAAAJ">Wangmeng Zuo</a><sup
+            style="margin-left: -7px;">3</sup><a
+            href="">Feng Gao</a><sup
+            style="margin-left: -7px;">1</sup><a
+            href="">Siwei Ma</a><sup
+            style="margin-left: -7px;">1</sup><a
+            href="https://scholar.google.com/citations?hl=en&user=7phvKK4AAAAJ">Shiliang Zhang</a><sup
+            style="margin-left: -7px;">1</sup><br>
+        <br>
+        <!--        <span style="font-size: 24px">KAIST-->
+        <span style="font-size: 20px;"><sup>1</sup>Peking University</span> &nbsp;<span
+                style="font-size: 20px;"><sup>2</sup>Li Auto</span> &nbsp;
+        <span style="font-size: 20px;"><sup>3</sup>Harbin Institute of Technology</span>
+        </span></p>
+    <br>
+    <img src="./MV_files/motivation.jpg" class="teaser-gif" style="width:100%;"><br>
+    <p style="text-align: center; font-size:18px; margin-top:10px;">
+        Motivation of this work. Existing text-to-video generation models often struggle to generate human videos
+        with reasonable structures, such as the results corresponding to the motion prompt "running" in (a). Moreover, as shown
+        in (b), most existing human video datasets focus on facial or upper-body regions, or consist of vertically
+        oriented dance videos, models trained on such datasets often struggle to generate realistic whole-body and long-range
+        movement.
+    </p>
+    <font size="+2">
+        <p style="text-align: center;font-size: 25px;">
+            <a href="https://arxiv.org/abs/2404.17364" target="_blank">[Paper]</a> &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="https://github.com/hywang2002/MoCo" target="_blank">[Code]</a> &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="MV_files/bibtex.txt" target="_blank">[BibTeX]</a>
+        </p>
+    </font>
+</div>
+
+
+<div class="content">
+    <h2>Abstract</h2>
+    <p>Generating human videos with consistent motion from text prompts remains a significant challenge, particularly for
+    whole-body or long-range motion. Existing video generation models prioritize appearance fidelity, resulting in unrealistic or physically implausible human movements with poor structural coherence. Additionally, most existing human video datasets primarily focus on facial or upper-body motions, or consist of vertically oriented dance videos, limiting the scope of corresponding generation methods to simple movements. To overcome these challenges, we propose MoCo, which decouples the process of human video generation into two
+    components: structure generation and appearance generation. Specifically, our method first employs an efficient 3D structure generator to produce a human motion sequence from a text prompt. The remaining video appearance is then synthesized under the guidance of the generated structural sequence. To improve fine-grained control over sparse human structures, we introduce Human-Aware Dynamic Control modules and integrate dense tracking constraints during training. Furthermore, recognizing the limitations of existing datasets, we construct a large-scale whole-body human video dataset featuring complex and diverse motions. Extensive experiments demonstrate that MoCo outperforms existing approaches in generating realistic and structurally coherent human videos.</p>
+</div>
+
+<!-- <div class="content">
+  <h2>Background</h2>
+  <p> Given a particular subject such as clock (shown in the real images on the left), it is very challenging to generate it in different contexts with state-of-the-art text-to-image models, while maintaining high fidelity to its key visual features. Even with dozens of iterations over a text prompt that contains a detailed description of the appearance of the clock (<em>"retro style yellow alarm clock with a white clock face and a yellow number three on the right part of the clock face in the jungle"</em>), the Imagen model [Saharia et al., 2022] can't reconstruct its key visual features (third column). Furthermore, even models whose text embedding lies in a shared language-vision space and can create semantic variations of the image, such as DALL-E2 [Ramesh et al., 2022], can neither reconstruct the appearance of the given subject nor modify the context (second column). In contrast, our approach (right) can synthesize the clock with high fidelity and in new contexts (<em>"a [V] clock in the jungle"</em>).</p>
+  <br>
+  <img class="summary-img" src="./StableVITON_files/background.png" style="width:100%;"> <br>
+</div> -->
+
+<div class="content">
+    <h2>Method</h2>
+    <p> Overview of the proposed MoCo. Given a text prompt, we first employ a 3D structure generator to produce a structure
+    sequence, which is subsequently encoded as structural features to guide the appearance generation process. To further
+    enhance motion consistency, we introduce human-aware dynamic control modules and incorporate a dense tracking loss
+    during training.</p>
+    <br>
+    <img class="summary-img" src="./MV_files/moco_framework.jpg" style="width:100%;"> <br>
+
+    <!-- <p> Global clothing features \( c_g \) provide identical conditions for blocks at each scale of U-Net, and
+        multi-scale
+        local clothing features \( c_l \) allow for reconstructing more accurate details. Therefore, joint attention
+        blocks are proposed to align \( c_g \) and \( c_l \) with the current person features. Additionally, to retain
+        most of the semantic information in global features \( c_g \), we use local features \( c_l \) to refine some
+        lost and
+        erroneous detailed texture information in \( c_g \) by selective fusion.</p>
+    <br>
+    <img class="summary-img" src="./MV_files/jab2.png" style="width:70%;"> <br> -->
+</div>
+
+<div class="content">
+    <h2>Comparison with Existing Text-to-Video Generation Models</h2>
+    <p>We show visual comparison with ModelScope, VideoCrafter2, Lavie, Mochi 1 and CogVideoX-5B, and we will provide more comparison with Hunyuan and Wan2.1 later.</p>
+
+    <div id="myCarousel2" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel2" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel2" data-slide-to="1"></li>
+            <li data-target="#myCarousel2" data-slide-to="2"></li>
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+            <div class="item active">
+                <div class="carousel-caption-top">
+                    <!-- <h1>Group 1 on MVG</h1> -->
+                </div>
+                <video style="width:100%;" controls autoplay loop muted>
+                    <source src="./MV_files/cmp1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="item">
+                <div class="carousel-caption-top">
+                    <!-- <h1>Group 2 on MVG</h1> -->
+                </div>
+                <video style="width:100%;" controls autoplay loop muted>
+                    <source src="./MV_files/cmp2.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="item">
+                <div class="carousel-caption-top">
+                    <!-- <h1>Group 3 on MVG</h1> -->
+                </div>
+                <video style="width:100%;" controls autoplay loop muted>
+                    <source src="./MV_files/cmp3.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel2" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel2" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <h2>Comparison with Text-Driven Human Video Generation Models</h2>
+    <p> Since existing text-driven human video generation methods (Move-in-2D and HumanDreamer) are not yet open source, we perform a visual comparison based on their released videos, if accessible.</p>
+    <br>
+    <video class="summary-video" src="./MV_files/cmp4.mp4" style="width:100%;" controls autoplay loop muted></video>
+    <br>
+
+    <br>
+    <br>
+    <br>
+
+    <h2>More Generated Videos of Our MoCo</h2>
+    <p> We show here more generation results of MoCo, a total of 14 videos.</p>
+     
+    <div id="myCarousel3" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel3" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel3" data-slide-to="1"></li>
+            <li data-target="#myCarousel3" data-slide-to="2"></li>
+            <li data-target="#myCarousel3" data-slide-to="3"></li>
+            <li data-target="#myCarousel3" data-slide-to="4"></li>
+            <li data-target="#myCarousel3" data-slide-to="5"></li>
+            <li data-target="#myCarousel3" data-slide-to="6"></li>
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="item active">
+                <div style="display: flex; gap: 10px;"> <!-- Flex container for two videos -->
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more1.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more2.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="item">
+                <div style="display: flex; gap: 10px;"> <!-- Flex container for two videos -->
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more3.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more4.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="item">
+                <div style="display: flex; gap: 10px;"> <!-- Flex container for two videos -->
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more5.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more6.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="item">
+                <div style="display: flex; gap: 10px;"> <!-- Flex container for two videos -->
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more7.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more8.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5 -->
+            <div class="item">
+                <div style="display: flex; gap: 10px;"> <!-- Flex container for two videos -->
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more9.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more10.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 6 -->
+            <div class="item">
+                <div style="display: flex; gap: 10px;"> <!-- Flex container for two videos -->
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more11.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more12.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7 -->
+            <div class="item">
+                <div style="display: flex; gap: 10px;"> <!-- Flex container for two videos -->
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more13.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div style="width: 50%;">
+                        <video style="width:100%;" controls autoplay loop muted>
+                            <source src="./MV_files/more14.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel3" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel3" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    <br>
+
+    <br>
+    <br>
+    <br>
+
+    <h2>Diverse Generated Videos via the Same Motion Prompt</h2>
+    <!-- <p> We present more results in which the person's pose is more complex. The original person images are from <a
+                    href="https://mengtingchen.github.io/wear-any-way-page/" target="_blank">[Wear-Any-Way]</a>.</p> -->
+    <br>
+    <video class="summary-video" src="./MV_files/diverse.mp4" style="width:100%;" controls autoplay loop muted></video>
+    <br>
+
+</div>
+
+<!-- <div class="content">
+    <h2>Model Weights</h2>
+    You can download it from <a
+        href="https://github.com/hywang2002/MoCo">link</a>.
+</div> -->
+
+<div class="content">
+    <h2>BibTex</h2>
+    <code> @article{wang2025moco,<br>
+        &nbsp;&nbsp;title={MoCo: Motion-Consistent Human Video Generation via Structure-Appearance Decoupling
+},<br>
+        &nbsp;&nbsp;author={Haoyu Wang, Hao Tang, Donglin Di, Zhilu Zhang, Wangmeng Zuo, Feng Gao, Siwei Ma, Shiliang Zhang},<br>
+        &nbsp;&nbsp;journal={arXiv preprint arXiv:2508.17404},<br>
+        &nbsp;&nbsp;year={2025}<br>
+        } </code>
+</div>
+
+<!-- <div class="content" id="acknowledgements">
+  <p><strong>Acknowledgements</strong>:
+    Sunghyun Park is the corresponding author.
+  </p>
+</div> -->
+
+<!-- <div class="content">
+    <h2>Acknowledgements</h2>
+    <p>Sunghyun Park is the corresponding author.</p>
+  </div> -->
+
+<div class="content">
+    <p class="serif">
+        Project page template is borrowed from <a href="https://dreambooth.github.io/">DreamBooth</a>.<br>
+<!--        <strong>Acknowledgements.</strong> Sunghyun Park is the corresponding author.-->
+    </p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+@article{wang2025moco,
+  title={MoCo: Motion-Consistent Human Video Generation via Structure-Appearance Decoupling},
+  author={Haoyu Wang, Hao Tang, Donglin Di, Zhilu Zhang, Wangmeng Zuo, Feng Gao, Siwei Ma, Shiliang Zhang},
+  journal={arXiv preprint arXiv:2508.17404},
+  year={2025}
+}
