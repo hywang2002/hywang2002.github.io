@@ -85,12 +85,9 @@
 
 <div class="content">
     <h2>Method</h2>
-    <p> Overview of the proposed MoSA. Given a text prompt, we first employ a 3D structure generator to produce a structure
-    sequence, which is subsequently encoded as structural features to guide the appearance generation process. To further
-    enhance motion consistency, we introduce human-aware dynamic control modules and incorporate a dense tracking loss
-    during training.</p>
+    <p> Overview of the proposed MoSA. Given a text prompt, we first employ a 3D structure transformer to generate a structure sequence, which is subsequently encoded as structural features to guide the appearance generation. To further enhance motion consistency, we introduce human-aware dynamic control modules. For brevity, the Gate modules in blocks have been omitted.</p>
     <br>
-    <img class="summary-img" src="./MV_files/moco_framework.jpg" style="width:100%;"> <br>
+    <img class="summary-img" src="./MV_files/framework_01.png" style="width:100%;"> <br>
 
     <!-- <p> Global clothing features \( c_g \) provide identical conditions for blocks at each scale of U-Net, and
         multi-scale
@@ -105,7 +102,7 @@
 
 <div class="content">
     <h2>Comparison with Existing Text-to-Video Generation Models</h2>
-    <p>We show visual comparison with ModelScope, VideoCrafter2, Lavie, Mochi 1 and CogVideoX-5B, and we will provide more comparison with Hunyuan and Wan2.1 later.</p>
+    <p>We show visual comparison with ModelScope, VideoCrafter2, Lavie, Mochi 1 and CogVideoX-5B, Hunyuan and Wan2.1.</p>
 
     <div id="myCarousel2" class="carousel slide" data-ride="carousel">
         <!-- Indicators -->
@@ -122,7 +119,7 @@
                     <!-- <h1>Group 1 on MVG</h1> -->
                 </div>
                 <video style="width:100%;" controls autoplay loop muted>
-                    <source src="./MV_files/cmp1.mp4" type="video/mp4">
+                    <source src="./MV_files/mosa_cmp1.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             </div>
@@ -132,7 +129,47 @@
                     <!-- <h1>Group 2 on MVG</h1> -->
                 </div>
                 <video style="width:100%;" controls autoplay loop muted>
-                    <source src="./MV_files/cmp2.mp4" type="video/mp4">
+                    <source src="./MV_files/mosa_cmp2.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="item">
+                <div class="carousel-caption-top">
+                    <!-- <h1>Group 2 on MVG</h1> -->
+                </div>
+                <video style="width:100%;" controls autoplay loop muted>
+                    <source src="./MV_files/mosa_cmp7.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="item">
+                <div class="carousel-caption-top">
+                    <!-- <h1>Group 2 on MVG</h1> -->
+                </div>
+                <video style="width:100%;" controls autoplay loop muted>
+                    <source src="./MV_files/mosa_cmp3.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="item">
+                <div class="carousel-caption-top">
+                    <!-- <h1>Group 2 on MVG</h1> -->
+                </div>
+                <video style="width:100%;" controls autoplay loop muted>
+                    <source src="./MV_files/mosa_cmp4.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="item">
+                <div class="carousel-caption-top">
+                    <!-- <h1>Group 2 on MVG</h1> -->
+                </div>
+                <video style="width:100%;" controls autoplay loop muted>
+                    <source src="./MV_files/mosa_cmp5.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             </div>
@@ -142,7 +179,7 @@
                     <!-- <h1>Group 3 on MVG</h1> -->
                 </div>
                 <video style="width:100%;" controls autoplay loop muted>
-                    <source src="./MV_files/cmp3.mp4" type="video/mp4">
+                    <source src="./MV_files/mosa_cmp6.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             </div>
