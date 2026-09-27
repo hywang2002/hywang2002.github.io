@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="DiverseAD: A Large-Scale Driving Dataset with Diverse Atmospheric Conditions">
+  <meta name="keywords"
+    content="DiverseAD, Autonomous Driving, End-to-End Planning, Atmospheric Invariant, VLM, Driving Dataset">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DiverseAD: A Large-Scale Driving Dataset with Diverse Atmospheric Conditions</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/style.css">
+
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+  <!-- Title & Authors Section -->
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">
+              DiverseAD: A Large-Scale Driving Dataset with Diverse Atmospheric Conditions
+            </h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="mailto:haoyu.wang@stu.pku.edu.cn">Haoyu Wang</a><sup>1,2</sup>,</span>
+              <span class="author-block">
+                <a href="mailto:mabaorui2014@gmail.com">Baorui Ma</a><sup>2</sup>,</span>
+              <span class="author-block">
+                <a href="mailto:donglin.ddl@gmail.com">Donglin Di</a><sup>2</sup>,</span>
+              <span class="author-block">
+                <a href="mailto:xsh1217@stu.pku.edu.cn">Suhang Xuan</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a href="mailto:lihao43@lixiang.com">Hao Li</a><sup>2</sup>,</span>
+              <span class="author-block">
+                <a href="mailto:slzhang.jdl@pku.edu.cn">Shiliang Zhang</a><sup>1,*</sup>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>State Key Laboratory of Multimedia Information Processing, School
+                of Computer Science, Peking University</span><br>
+              <span class="author-block"><sup>2</sup>Li Auto, Beijing, China</span><br>
+              <span class="author-block" style="font-size: 0.9em; color: #666;">(*Corresponding Author)</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- Paper Link (Placeholder) -->
+                <span class="link-block">
+                  <a href="#" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <!-- arXiv Link (Placeholder) -->
+                <span class="link-block">
+                  <a href="#" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="ai ai-arxiv"></i></span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <!-- Dataset Request Link -->
+                <span class="link-block">
+                  <a href="https://drive.google.com/file/d/1fZJshoUlhDIi4hS047iNeld-1a5KnILR/view?usp=sharing"
+                    target="_blank" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-database"></i></span>
+                    <span>Dataset Request</span>
+                  </a>
+                </span>
+                <!-- Code Link (Placeholder) -->
+                <span class="link-block">
+                  <a href="#" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>Code (Coming Soon)</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Teaser Image Section -->
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body has-text-centered">
+        <!-- 【图片位置 1】：请放置论文中的 Fig. 1 (Overview of DiverseAD) -->
+        <img src="./static/images/teaser.png" alt="DiverseAD Overview"
+          style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+        <h2 class="subtitle has-text-centered" style="margin-top: 15px;">
+          <strong>Figure 1: Overview of DiverseAD.</strong> DiverseAD delivers three key advantages:
+          <strong>large-scale real-world data</strong> (150K scenes, 1M videos, 150M frames),
+          <strong>high environmental diversity</strong> (9 atmospheric types, 14 road types, 0-180 km/h), and
+          <strong>rich multimodal annotations</strong> (3D perception, trajectory, and VQA pairs).
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abstract Section -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Strong generalization to diversified atmospheric conditions is crucial for autonomous driving models.
+              However, models trained on existing datasets struggle with real-world complexity due to homogeneous
+              weather, limited maneuvers, and insufficient scale.
+            </p>
+            <p>
+              To overcome this issue, we introduce <strong>DiverseAD</strong>, a large-scale driving dataset comprising
+              <strong>150K scenes</strong> that feature great diversity in atmospheric conditions, road types, and
+              driving actions. Based on this dataset, we further propose a novel end-to-end autonomous driving model
+              robust across diverse atmospheric conditions.
+            </p>
+            <p>
+              Specifically, an <strong>Atmospheric-Invariant Feature Learning</strong> mechanism is proposed, which
+              disentangles atmospheric-agnostic features from visual inputs by using driving intent and scene structure
+              cues as stable anchors. Experiments demonstrate that DiverseAD is superior to existing public datasets in
+              diversity, and our proposed model sets a new standard for end-to-end planning robustness in challenging
+              weather.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dataset Features Section -->
+  <section class="section" style="background-color: #f9fafb;">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3">The DiverseAD Dataset</h2>
+        </div>
+      </div>
+
+      <!-- 3 Key Features -->
+      <div class="columns is-multiline">
+        <div class="column is-4">
+          <div class="box" style="height: 100%;">
+            <h4 class="title is-5"><i class="fas fa-cubes" style="color: #3273dc;"></i> Large-Scale Real-World Data</h4>
+            <p>Captured across vast real-world environments featuring <strong>150K unique scenes</strong>, over
+              <strong>1 Million videos</strong>, and more than <strong>150 Million frames</strong> recorded with a
+              multi-camera array.</p>
+          </div>
+        </div>
+        <div class="column is-4">
+          <div class="box" style="height: 100%;">
+            <h4 class="title is-5"><i class="fas fa-cloud-sun-rain" style="color: #ff3860;"></i> Exceptional Diversity
+            </h4>
+            <p>Covers <strong>9 atmospheric types</strong> (Bright, Dark, Dusty, Foggy, Glare, Rainy, Snowy, Sunny,
+              Windy), <strong>14 road typologies</strong>, and vehicle speeds spanning <strong>0 to 180 km/h</strong>
+              across various driving behaviors.</p>
+          </div>
+        </div>
+        <div class="column is-4">
+          <div class="box" style="height: 100%;">
+            <h4 class="title is-5"><i class="fas fa-tags" style="color: #23d160;"></i> Comprehensive Annotations</h4>
+            <p>Features 7-camera RGB videos, synchronized LiDAR point clouds, 3D bounding boxes, lane boundaries,
+              real-time ego trajectories, and natural language descriptions with <strong>VQA pairs</strong>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dataset Sensors & Statistics Images -->
+      <div class="columns is-centered" style="margin-top: 20px;">
+        <div class="column is-half has-text-centered">
+          <!-- 【图片位置 2】：请放置论文中的 Fig. 2 (Sensor configuration & Word clouds) -->
+          <img src="./static/images/sensor_and_cloud.png" alt="Sensor Setup & Word Cloud"
+            style="max-width: 100%; border-radius: 6px;">
+          <p class="caption"><strong>Figure 2:</strong> Sensor configuration (IMU, GPS, LiDAR, 7 Cameras) and scene
+            description word clouds.</p>
+        </div>
+        <div class="column is-half has-text-centered">
+          <!-- 【图片位置 3】：请放置论文中的 Fig. 3 (Dataset Statistics Charts) -->
+          <img src="./static/images/dataset_stats.png" alt="Dataset Statistics"
+            style="max-width: 100%; border-radius: 6px;">
+          <p class="caption"><strong>Figure 3:</strong> Distributions of atmospheric conditions, road types, vehicle
+            velocity (vs. nuScenes), and driving behaviors.</p>
+        </div>
+      </div>
+
+      <!-- Comparison Table (Table 1 in Paper) -->
+      <div class="content" style="margin-top: 30px;">
+        <h4 class="title is-5 has-text-centered">Comparison with Existing Autonomous Driving Datasets</h4>
+        <div class="table-container">
+          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth has-text-centered">
+            <thead>
+              <tr>
+                <th>Dataset</th>
+                <th>Year</th>
+                <th>Cameras</th>
+                <th>Scenes</th>
+                <th>Frames</th>
+                <th>LiDAR</th>
+                <th>Atmospheric Conditions</th>
+                <th>Task</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Foggy Zurich</td>
+                <td>2018</td>
+                <td>1</td>
+                <td>-</td>
+                <td>3,808</td>
+                <td>✗</td>
+                <td>Foggy</td>
+                <td>Perc.</td>
+              </tr>
+              <tr>
+                <td>BDD100K</td>
+                <td>2020</td>
+                <td>1</td>
+                <td>100K</td>
+                <td>-</td>
+                <td>✗</td>
+                <td>Rainy, foggy, snowy, dark</td>
+                <td>Perc.</td>
+              </tr>
+              <tr>
+                <td>ACDC</td>
+                <td>2021</td>
+                <td>1</td>
+                <td>-</td>
+                <td>8,012</td>
+                <td>✗</td>
+                <td>Rainy, foggy, snowy, dark</td>
+                <td>Perc.</td>
+              </tr>
+              <tr>
+                <td>nuScenes</td>
+                <td>2019</td>
+                <td>6</td>
+                <td>1K</td>
+                <td>40K</td>
+                <td>✓</td>
+                <td>Normal</td>
+                <td>Plan.</td>
+              </tr>
+              <tr>
+                <td>Waymo E2E</td>
+                <td>2019</td>
+                <td>8</td>
+                <td>4K</td>
+                <td>-</td>
+                <td>✗</td>
+                <td>Normal</td>
+                <td>Plan.</td>
+              </tr>
+              <tr>
+                <td>nuPlan</td>
+                <td>2021</td>
+                <td>6</td>
+                <td>15K</td>
+                <td>-</td>
+                <td>✓</td>
+                <td>Normal</td>
+                <td>Plan.</td>
+              </tr>
+              <tr class="has-text-weight-bold" style="background-color: #eef6fc;">
+                <td>DiverseAD (Ours)</td>
+                <td>2026</td>
+                <td>7</td>
+                <td>150K</td>
+                <td>150M</td>
+                <td>✓</td>
+                <td>Rainy, foggy, snowy, dark, bright, dusty, glare, sunny, windy</td>
+                <td>Plan.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- VQA Pipeline Section -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full has-text-centered">
+          <h2 class="title is-3">VQA Annotation Pipeline</h2>
+          <!-- 【图片位置 4】：请放置论文中的 Fig. 4(a) (VQA annotation pipeline) -->
+          <img src="./static/images/vqa_pipeline.png" alt="VQA Pipeline"
+            style="max-width: 90%; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div class="content has-text-justified" style="margin-top: 15px;">
+            <p>
+              To advance research in Vision-Language-Action (VLA) models, we establish a scalable VQA generation
+              pipeline:
+            </p>
+            <ul>
+              <li><strong>Scene Graph Construction:</strong> Building relational graphs from 3D bounding boxes projected
+                onto Bird's-Eye-View (BEV).</li>
+              <li><strong>Template Design:</strong> Formulating query templates covering existence, counting, and object
+                status.</li>
+              <li><strong>Instantiation via Search:</strong> Programmatically deducing answers via Depth-First Search
+                (DFS) along semantic scene graph paths.</li>
+              <li><strong>Automated Post-Processing:</strong> Combining VLM-based filtering and manual validation to
+                prune ill-posed queries.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Method Section -->
+  <section class="section" style="background-color: #f9fafb;">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full has-text-centered">
+          <h2 class="title is-3">Method: Atmospheric-Invariant Feature Learning</h2>
+          <!-- 【图片位置 5】：请放置论文中的 Fig. 4(b) (Overview of Autonomous Driving Model) -->
+          <img src="./static/images/framework.png" alt="Method Framework"
+            style="max-width: 95%; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+          <div class="content has-text-justified" style="margin-top: 20px;">
+            <p>
+              Standard end-to-end models often overfit to transient atmospheric perturbations (fog, heavy rain,
+              nighttime glare). We disentangle driving-critical features from weather noise by introducing two auxiliary
+              invariant anchors:
+            </p>
+            <div class="columns">
+              <div class="column is-6">
+                <div class="box">
+                  <h5 class="title is-5">1. Driving-Intent Anchoring (\(\mathcal{L}_{int}\))</h5>
+                  <p>
+                    Instead of absolute coordinates, we normalize instantaneous displacement vectors \(\hat{v}_k\) to
+                    compute pairwise intent similarity:
+                    $$S^{ij}_{int} = \frac{1}{K-1} \sum_{k=1}^{K-1} \hat{v}_k^i \cdot \hat{v}_k^j$$
+                    A soft KL-divergence constraint aligns visual representations of scenes sharing identical maneuvers
+                    across different domains.
+                  </p>
+                </div>
+              </div>
+              <div class="column is-6">
+                <div class="box">
+                  <h5 class="title is-5">2. Scene-Structure Anchoring (\(\mathcal{L}_{str}\))</h5>
+                  <p>
+                    We leverage a pre-trained foundation model (<strong>DINOv3</strong>) as a frozen structure expert
+                    \(\Phi\). By converting feature cosine similarity into Gaussian-weighted targets:
+                    $$w^{ij}_{str} = \exp\left(-\frac{(1 - S^{ij}_{str})^2}{\sigma_{str}^2}\right)$$
+                    the policy network distills invariant structural layouts while shedding domain-variant style
+                    variations.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experimental Results Section -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3">Experimental Results</h2>
+        </div>
+      </div>
+
+      <!-- Table 2: Benchmark Performance on DiverseAD -->
+      <div class="content">
+        <h4 class="title is-5 has-text-centered">Planning Performance Across Diverse Atmospheric Conditions (DiverseAD)
+        </h4>
+        <div class="table-container">
+          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth has-text-centered">
+            <thead>
+              <tr>
+                <th rowspan="2" style="vertical-align: middle;">Method</th>
+                <th colspan="4">All - L2 (m) ↓</th>
+                <th rowspan="2" style="vertical-align: middle;">VQA Acc. (%) ↑</th>
+              </tr>
+              <tr>
+                <th>1s</th>
+                <th>2s</th>
+                <th>3s</th>
+                <th>Avg.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>UniAD (CVPR'23)</td>
+                <td>15.40</td>
+                <td>31.11</td>
+                <td>46.99</td>
+                <td>31.17</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>UniAD*</td>
+                <td>1.04</td>
+                <td>2.06</td>
+                <td>3.23</td>
+                <td>2.11</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>VAD (ICCV'23)</td>
+                <td>15.01</td>
+                <td>30.02</td>
+                <td>44.97</td>
+                <td>30.00</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>VAD*</td>
+                <td>0.72</td>
+                <td>1.67</td>
+                <td>2.69</td>
+                <td>1.69</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>OpenEMMA* (arXiv'24)</td>
+                <td>0.71</td>
+                <td>1.60</td>
+                <td>2.67</td>
+                <td>1.66</td>
+                <td>60.28</td>
+              </tr>
+              <tr>
+                <td>OmniDrive* (CVPR'25)</td>
+                <td>0.61</td>
+                <td>1.45</td>
+                <td>2.50</td>
+                <td>1.52</td>
+                <td>64.51</td>
+              </tr>
+              <tr>
+                <td>FSDrive* (NeurIPS'25)</td>
+                <td>0.59</td>
+                <td>1.38</td>
+                <td>2.34</td>
+                <td>1.44</td>
+                <td>65.33</td>
+              </tr>
+              <tr class="has-text-weight-bold" style="background-color: #eef6fc;">
+                <td>Ours</td>
+                <td>0.53</td>
+                <td>1.21</td>
+                <td>1.99</td>
+                <td>1.24</td>
+                <td>72.68</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="is-size-7 has-text-grey">* indicates models fine-tuned on the DiverseAD training split.</p>
+      </div>
+
+      <!-- Table 4: Benchmark on nuScenes -->
+      <div class="content" style="margin-top: 40px;">
+        <h4 class="title is-5 has-text-centered">End-to-End Planning on nuScenes Benchmark</h4>
+        <div class="table-container">
+          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth has-text-centered">
+            <thead>
+              <tr>
+                <th rowspan="2" style="vertical-align: middle;">Method</th>
+                <th colspan="4">L2 Displacement (m) ↓</th>
+                <th colspan="4">Collision Rate (%) ↓</th>
+              </tr>
+              <tr>
+                <th>1s</th>
+                <th>2s</th>
+                <th>3s</th>
+                <th>Avg.</th>
+                <th>1s</th>
+                <th>2s</th>
+                <th>3s</th>
+                <th>Avg.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>UniAD</td>
+                <td>0.48</td>
+                <td>0.96</td>
+                <td>1.65</td>
+                <td>1.03</td>
+                <td>0.05</td>
+                <td>0.17</td>
+                <td>0.71</td>
+                <td>0.31</td>
+              </tr>
+              <tr>
+                <td>VAD</td>
+                <td>0.41</td>
+                <td>0.70</td>
+                <td>1.05</td>
+                <td>0.72</td>
+                <td>0.07</td>
+                <td>0.18</td>
+                <td>0.43</td>
+                <td>0.23</td>
+              </tr>
+              <tr>
+                <td>GenAD</td>
+                <td>0.28</td>
+                <td>0.49</td>
+                <td>0.78</td>
+                <td>0.52</td>
+                <td>0.08</td>
+                <td>0.14</td>
+                <td>0.34</td>
+                <td>0.19</td>
+              </tr>
+              <tr>
+                <td>OmniDrive</td>
+                <td>0.15</td>
+                <td>0.36</td>
+                <td>0.70</td>
+                <td>0.40</td>
+                <td>0.06</td>
+                <td>0.27</td>
+                <td>0.72</td>
+                <td>0.35</td>
+              </tr>
+              <tr>
+                <td>World4Drive</td>
+                <td>0.23</td>
+                <td>0.47</td>
+                <td>0.81</td>
+                <td>0.50</td>
+                <td>0.02</td>
+                <td>0.12</td>
+                <td>0.33</td>
+                <td>0.16</td>
+              </tr>
+              <tr class="has-text-weight-bold" style="background-color: #eef6fc;">
+                <td>Ours</td>
+                <td>0.22</td>
+                <td>0.35</td>
+                <td>0.58</td>
+                <td>0.39</td>
+                <td>0.01</td>
+                <td>0.06</td>
+                <td>0.41</td>
+                <td>0.16</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BibTeX Citation Section -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{wang2026diversead,
+  title={DiverseAD: A Large-Scale Driving Dataset with Diverse Atmospheric Conditions},
+  author={Wang, Haoyu and Ma, Baorui and Di, Donglin and Xuan, Suhang and Li, Hao and Zhang, Shiliang},
+  journal={arXiv preprint},
+  year={2026}
+}</code></pre>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8 has-text-centered">
+          <p>
+            This website is adapted from the <a href="https://github.com/Flow-WAM/Flow-WAM.github.io"
+              target="_blank">Flow-WAM</a> / <a href="https://github.com/nerfies/nerfies.github.io"
+              target="_blank">Nerfies</a> template.
+            For dataset access or inquiries, please submit the request form or contact <a
+              href="mailto:cshy2mvvton@outlook.com">cshy2mvvton@outlook.com</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
