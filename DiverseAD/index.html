@@ -1,92 +1,448 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="description" content="DiverseAD: A Large-Scale Driving Dataset with Diverse Atmospheric Conditions">
-  <meta name="keywords"
-    content="DiverseAD, Autonomous Driving, End-to-End Planning, Atmospheric Invariant, VLM, Driving Dataset">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DiverseAD: A Large-Scale Driving Dataset with Diverse Atmospheric Conditions</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DiverseAD — A Large-Scale Driving Dataset with Diverse Atmospheric Conditions</title>
 
-  <!-- Google Fonts & FontAwesome -->
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/style.css">
+  <meta name="description" content="DiverseAD: A Large-Scale Driving Dataset with Diverse Atmospheric Conditions. 150K scenes, 1M videos, 150M frames across 9 atmospheric types." />
+  <meta name="keywords" content="DiverseAD, Autonomous Driving, End-to-End Planning, Atmospheric Invariant, VLM, Driving Dataset" />
+  <meta name="robots" content="index,follow" />
 
-  <!-- MathJax -->
+  <meta property="og:title" content="DiverseAD — A Large-Scale Driving Dataset with Diverse Atmospheric Conditions" />
+  <meta property="og:description" content="A large-scale driving dataset with diverse atmospheric conditions and an atmospheric-invariant end-to-end planning model." />
+  <meta property="og:image" content="./static/images/teaser.png" />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Inter', 'system-ui', 'sans-serif'],
+            serif: ['Georgia', 'serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          },
+          colors: {
+            ink: {
+              900: '#1C1917',
+              700: '#292524',
+              500: '#57534E',
+              400: '#78716C',
+              300: '#A8A29E',
+              100: '#E7E5E4',
+              50: '#F5F5F4',
+            },
+            cream: '#FAF8F4',
+          },
+          animation: {
+            'blob-slow': 'blob 28s ease-in-out infinite',
+            'float': 'float 7s ease-in-out infinite',
+          },
+          keyframes: {
+            blob: {
+              '0%,100%': { transform: 'translate(0,0) scale(1)' },
+              '33%': { transform: 'translate(30px,-20px) scale(1.05)' },
+              '66%': { transform: 'translate(-20px,20px) scale(0.97)' },
+            },
+            float: {
+              '0%,100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-8px)' },
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #FAF8F4;
+      color: #1C1917;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+    h1, h2, h3, h4, h5, .font-display {
+      font-family: 'Inter', system-ui, sans-serif;
+      letter-spacing: -0.018em;
+    }
+    .num {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.025em;
+      font-feature-settings: 'tnum';
+    }
+    .font-mono, code, pre {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    .accent-text { color: #C2410C; }
+
+    .blob {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(120px);
+      opacity: 0.07;
+      pointer-events: none;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(16px) saturate(110%);
+      -webkit-backdrop-filter: blur(16px) saturate(110%);
+      border: 1px solid rgba(28, 25, 23, 0.07);
+      box-shadow: 0 2px 14px -8px rgba(28, 25, 23, 0.10);
+    }
+
+    .gradient-border {
+      position: relative;
+      background: #FFFFFF;
+      border: 1px solid rgba(28, 25, 23, 0.08);
+      border-radius: 24px;
+      box-shadow: 0 12px 32px -20px rgba(28, 25, 23, 0.20);
+    }
+
+    .btn-gradient {
+      background: #C2410C;
+      transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.2s ease;
+      box-shadow: 0 4px 14px -6px rgba(194, 65, 12, 0.45);
+    }
+    .btn-gradient:hover {
+      transform: translateY(-1px);
+      background: #9A3412;
+      box-shadow: 0 8px 22px -8px rgba(194, 65, 12, 0.5);
+    }
+    .btn-ghost {
+      background: rgba(28, 25, 23, 0.04);
+      border: 1px solid rgba(28, 25, 23, 0.08);
+      transition: all 0.2s ease;
+    }
+    .btn-ghost:hover {
+      background: rgba(28, 25, 23, 0.07);
+      border-color: rgba(28, 25, 23, 0.14);
+    }
+
+    .lift {
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s ease, border-color 0.3s ease;
+    }
+    .lift:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 32px -16px rgba(28, 25, 23, 0.18);
+    }
+
+    .stat-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(28, 25, 23, 0.06);
+      box-shadow: 0 1px 3px rgba(28, 25, 23, 0.04);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 0.9s cubic-bezier(0.22,1,0.36,1);
+      will-change: transform, opacity;
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .logo-mark {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      background: #FFFFFF;
+      color: #C2410C;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      box-shadow:
+        0 0 0 1px rgba(28, 25, 23, 0.06),
+        0 4px 14px -6px rgba(28, 25, 23, 0.12);
+    }
+    .logo-mark.hero-halo {
+      box-shadow:
+        0 0 0 1px rgba(28, 25, 23, 0.05),
+        0 0 0 8px rgba(28, 25, 23, 0.03),
+        0 14px 40px -16px rgba(28, 25, 23, 0.20);
+    }
+
+    .ftable {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.9rem;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.008em;
+    }
+    .ftable th, .ftable td {
+      padding: 14px 16px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .ftable thead th {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-weight: 500;
+      color: #57534E;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-bottom: 1px solid #E7E5E4;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    .ftable tbody tr { transition: background 0.25s ease; }
+    .ftable tbody tr:not(:last-child) td { border-bottom: 1px solid #F5F5F4; }
+    .ftable tbody tr:hover { background: rgba(194,65,12,0.04); }
+    .ftable .name {
+      text-align: left;
+      font-weight: 500;
+      color: #292524;
+    }
+    .ftable .num-cell {
+      font-variant-numeric: tabular-nums;
+      font-weight: 500;
+      color: #292524;
+    }
+    .ftable .type-cell {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: #78716C;
+    }
+    .ftable .highlight { background: rgba(194,65,12,0.06); }
+    .ftable .highlight td {
+      font-weight: 600;
+      color: #1C1917;
+    }
+    .ftable .highlight .name { color: #1C1917; font-weight: 600; }
+    .ftable .best,
+    .ftable .highlight td.best {
+      color: #9A3412;
+      font-weight: 700;
+    }
+
+    .mode-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      padding: 32px;
+      background: #FFFFFF;
+      border: 1px solid rgba(28, 25, 23, 0.08);
+      color: #57534E;
+      box-shadow: 0 4px 18px -10px rgba(28, 25, 23, 0.10);
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s ease;
+    }
+    .mode-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 38px -22px rgba(28, 25, 23, 0.16);
+    }
+    .mode-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+    .mode-intent::before { background: #C2410C; }
+    .mode-struct::before { background: #B45309; }
+
+    pre.bibtex {
+      background: #1C1917;
+      color: #E7E5E4;
+      padding: 28px;
+      border-radius: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.86rem;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .grad-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(28,25,23,0.12), transparent);
+    }
+
+    .author-link {
+      color: #292524;
+      white-space: nowrap;
+      transition: color 0.2s ease, text-decoration-color 0.2s ease;
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      text-underline-offset: 3px;
+    }
+    .author-link:hover {
+      color: #C2410C;
+      text-decoration-color: currentColor;
+    }
+
+    .caption {
+      margin-top: 14px;
+      font-size: 0.92rem;
+      color: #57534E;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(28, 25, 23, 0.18);
+      border-radius: 9999px;
+      border: 2px solid #FAF8F4;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(28, 25, 23, 0.3); }
+
+    .mjx-chtml { font-size: 105% !important; }
+  </style>
+
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
-
 <body>
 
-  <!-- Title & Authors Section -->
-  <section class="hero">
-    <div class="hero-body">
-      <div class="container is-max-desktop">
-        <div class="columns is-centered">
-          <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">
-              DiverseAD: A Large-Scale Driving Dataset with Diverse Atmospheric Conditions
-            </h1>
-            <div class="is-size-5 publication-authors">
-              <span class="author-block">
-                <a href="mailto:haoyu.wang@stu.pku.edu.cn">Haoyu Wang</a><sup>1,2</sup>,</span>
-              <span class="author-block">
-                <a href="mailto:mabaorui2014@gmail.com">Baorui Ma</a><sup>2</sup>,</span>
-              <span class="author-block">
-                <a href="mailto:donglin.ddl@gmail.com">Donglin Di</a><sup>2</sup>,</span>
-              <span class="author-block">
-                <a href="mailto:xsh1217@stu.pku.edu.cn">Suhang Xuan</a><sup>1</sup>,</span>
-              <span class="author-block">
-                <a href="mailto:lihao43@lixiang.com">Hao Li</a><sup>2</sup>,</span>
-              <span class="author-block">
-                <a href="mailto:slzhang.jdl@pku.edu.cn">Shiliang Zhang</a><sup>1,*</sup>
-              </span>
-            </div>
+  <!-- ============================================ -->
+  <!-- 1. NAVIGATION                                -->
+  <!-- ============================================ -->
+  <nav class="fixed top-0 inset-x-0 z-50">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="mt-4 glass rounded-2xl px-5 py-3 flex items-center justify-between">
+        <a href="#top" class="flex items-center gap-3 group">
+          <div class="logo-mark w-10 h-10 text-sm group-hover:scale-105 transition-transform">D</div>
+          <span class="font-display font-semibold text-lg tracking-tight accent-text">DiverseAD</span>
+        </a>
 
-            <div class="is-size-5 publication-authors">
-              <span class="author-block"><sup>1</sup>State Key Laboratory of Multimedia Information Processing, School
-                of Computer Science, Peking University</span><br>
-              <span class="author-block"><sup>2</sup>Li Auto, Beijing, China</span><br>
-              <span class="author-block" style="font-size: 0.9em; color: #666;">(*Corresponding Author)</span>
-            </div>
+        <div class="hidden lg:flex items-center gap-7 text-sm font-medium text-ink-500">
+          <a href="#abstract" class="hover:text-ink-900 transition">Abstract</a>
+          <a href="#dataset" class="hover:text-ink-900 transition">Dataset</a>
+          <a href="#vqa" class="hover:text-ink-900 transition">VQA</a>
+          <a href="#method" class="hover:text-ink-900 transition">Method</a>
+          <a href="#experiments" class="hover:text-ink-900 transition">Experiments</a>
+          <a href="#bibtex" class="hover:text-ink-900 transition">BibTeX</a>
+        </div>
 
-            <div class="column has-text-centered">
-              <div class="publication-links">
-                <!-- Paper Link (Placeholder) -->
-                <span class="link-block">
-                  <a href="#" class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
-                    <span>Paper</span>
-                  </a>
-                </span>
-                <!-- arXiv Link (Placeholder) -->
-                <span class="link-block">
-                  <a href="#" class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="ai ai-arxiv"></i></span>
-                    <span>arXiv</span>
-                  </a>
-                </span>
-                <!-- Dataset Request Link -->
-                <span class="link-block">
-                  <a href="https://drive.google.com/file/d/1fZJshoUlhDIi4hS047iNeld-1a5KnILR/view?usp=sharing"
-                    target="_blank" class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="fas fa-database"></i></span>
-                    <span>Dataset Request</span>
-                  </a>
-                </span>
-                <!-- Code Link (Placeholder) -->
-                <span class="link-block">
-                  <a href="#" class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="fab fa-github"></i></span>
-                    <span>Code (Coming Soon)</span>
-                  </a>
-                </span>
-              </div>
+        <a href="https://drive.google.com/file/d/1fZJshoUlhDIi4hS047iNeld-1a5KnILR/view?usp=sharing"
+           target="_blank" rel="noopener noreferrer"
+           class="btn-ghost text-sm font-medium px-3.5 py-2 rounded-full inline-flex items-center gap-2">
+          <i class="fa-solid fa-database text-xs"></i>
+          <span class="hidden sm:inline">Dataset</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================ -->
+  <!-- 2. HERO                                      -->
+  <!-- ============================================ -->
+  <header id="top" class="relative overflow-hidden pt-32 pb-16 lg:pt-40 lg:pb-24">
+    <div class="blob w-[560px] h-[560px] -top-40 -left-40 animate-blob-slow" style="background: radial-gradient(circle at 30% 30%, #C2410C, transparent 70%);"></div>
+    <div class="absolute inset-0 pointer-events-none" style="background-image:
+      linear-gradient(rgba(28,25,23,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(28,25,23,0.025) 1px, transparent 1px);
+      background-size: 56px 56px; mask-image: radial-gradient(ellipse at center, black 25%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse at center, black 25%, transparent 75%);"></div>
+
+    <div class="relative mx-auto max-w-6xl px-5 lg:px-8 text-center">
+      <div class="flex justify-center mb-8 reveal">
+        <div class="logo-mark hero-halo w-28 h-28 lg:w-32 lg:h-32 text-4xl lg:text-5xl animate-float">D</div>
+      </div>
+
+      <div class="flex justify-center mb-6 reveal">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[11px] font-mono font-medium tracking-wider uppercase glass text-ink-500">
+          <span class="w-1.5 h-1.5 rounded-full" style="background: #C2410C;"></span>
+          ArXiv 2026 · Preprint
+        </span>
+      </div>
+
+      <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl leading-[0.95] mb-6 reveal text-ink-900" style="font-weight: 700; letter-spacing: -0.035em;">
+        DiverseAD
+      </h1>
+
+      <p class="max-w-4xl mx-auto text-xl sm:text-2xl lg:text-[2rem] leading-[1.25] text-ink-900 mb-10 reveal" style="font-weight: 500; letter-spacing: -0.02em;">
+        A Large-Scale Driving Dataset with
+        <span class="accent-text" style="font-weight: 700;">Diverse Atmospheric Conditions</span>
+      </p>
+
+      <div class="max-w-4xl mx-auto text-base sm:text-lg text-ink-700 leading-[1.85] mb-3 reveal" style="letter-spacing: -0.008em;">
+        <a href="mailto:haoyu.wang@stu.pku.edu.cn" class="author-link">Haoyu Wang</a><sup class="text-ink-400 text-sm">1,2</sup>,
+        <a href="mailto:mabaorui2014@gmail.com" class="author-link">Baorui Ma</a><sup class="text-ink-400 text-sm">2</sup>,
+        <a href="mailto:donglin.ddl@gmail.com" class="author-link">Donglin Di</a><sup class="text-ink-400 text-sm">2</sup>,
+        <a href="mailto:xsh1217@stu.pku.edu.cn" class="author-link">Suhang Xuan</a><sup class="text-ink-400 text-sm">1</sup>,
+        <a href="mailto:lihao43@lixiang.com" class="author-link">Hao Li</a><sup class="text-ink-400 text-sm">2</sup>,
+        <a href="mailto:slzhang.jdl@pku.edu.cn" class="author-link">Shiliang Zhang</a><sup class="text-ink-400 text-sm">1,*</sup>
+      </div>
+
+      <div class="text-sm text-ink-400 mb-5 reveal">
+        <sup>*</sup> Corresponding Author
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm sm:text-base text-ink-500 mb-12 reveal">
+        <span><sup>1</sup> State Key Laboratory of Multimedia Information Processing, School of Computer Science, Peking University</span>
+        <span><sup>2</sup> Li Auto, Beijing, China</span>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-3 reveal">
+        <a href="#" class="btn-gradient px-6 py-3 rounded-full text-white font-medium inline-flex items-center gap-2 text-sm">
+          <i class="fa-solid fa-file-pdf"></i> Paper
+        </a>
+        <a href="#" class="btn-gradient px-6 py-3 rounded-full text-white font-medium inline-flex items-center gap-2 text-sm">
+          <i class="ai ai-arxiv"></i> arXiv
+        </a>
+        <a href="https://drive.google.com/file/d/1fZJshoUlhDIi4hS047iNeld-1a5KnILR/view?usp=sharing"
+           target="_blank" rel="noopener noreferrer"
+           class="btn-gradient px-6 py-3 rounded-full text-white font-medium inline-flex items-center gap-2 text-sm">
+          <i class="fa-solid fa-database"></i> Dataset Request
+        </a>
+        <a href="#" class="btn-ghost px-6 py-3 rounded-full text-ink-700 font-medium inline-flex items-center gap-2 text-sm">
+          <i class="fa-brands fa-github"></i> Code (Coming Soon)
+        </a>
+        <a href="#bibtex" class="btn-ghost px-6 py-3 rounded-full text-ink-700 font-medium inline-flex items-center gap-2 text-sm">
+          <i class="fa-solid fa-quote-right"></i> BibTeX
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================ -->
+  <!-- 3. ABSTRACT / TL;DR                          -->
+  <!-- ============================================ -->
+  <section id="abstract" class="relative py-12">
+    <div class="mx-auto max-w-5xl px-5 lg:px-8">
+      <div class="reveal relative rounded-2xl p-8 lg:p-10 glass overflow-hidden">
+        <div class="absolute left-0 top-0 bottom-0 w-1" style="background: #C2410C;"></div>
+        <div class="flex items-start gap-6">
+          <div class="hidden md:flex shrink-0 w-12 h-12 items-center justify-center rounded-xl text-white font-mono text-[10px] font-bold tracking-widest" style="background: #C2410C;">
+            ABS
+          </div>
+          <div>
+            <div class="md:hidden mb-2 font-mono text-xs tracking-widest font-bold accent-text">ABSTRACT</div>
+            <div class="space-y-4 text-lg lg:text-xl leading-relaxed text-ink-700">
+              <p>
+                Strong generalization to diversified atmospheric conditions is crucial for autonomous driving models.
+                However, models trained on existing datasets struggle with real-world complexity due to homogeneous
+                weather, limited maneuvers, and insufficient scale.
+              </p>
+              <p>
+                To overcome this issue, we introduce <span class="accent-text font-semibold">DiverseAD</span>, a large-scale driving dataset comprising
+                <span class="font-semibold text-ink-900">150K scenes</span> that feature great diversity in atmospheric conditions, road types, and
+                driving actions. Based on this dataset, we further propose a novel end-to-end autonomous driving model
+                robust across diverse atmospheric conditions.
+              </p>
+              <p>
+                Specifically, an <span class="font-semibold text-ink-900">Atmospheric-Invariant Feature Learning</span> mechanism is proposed, which
+                disentangles atmospheric-agnostic features from visual inputs by using driving intent and scene structure
+                cues as stable anchors. Experiments demonstrate that DiverseAD is superior to existing public datasets in
+                diversity, and our proposed model sets a new standard for end-to-end planning robustness in challenging
+                weather.
+              </p>
             </div>
           </div>
         </div>
@@ -94,302 +450,417 @@
     </div>
   </section>
 
-  <!-- Teaser Image Section -->
-  <section class="hero teaser">
-    <div class="container is-max-desktop">
-      <div class="hero-body has-text-centered">
-        <!-- 【图片位置 1】：请放置论文中的 Fig. 1 (Overview of DiverseAD) -->
-        <img src="./static/images/teaser.png" alt="DiverseAD Overview"
-          style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
-        <h2 class="subtitle has-text-centered" style="margin-top: 15px;">
-          <strong>Figure 1: Overview of DiverseAD.</strong> DiverseAD delivers three key advantages:
-          <strong>large-scale real-world data</strong> (150K scenes, 1M videos, 150M frames),
-          <strong>high environmental diversity</strong> (9 atmospheric types, 14 road types, 0-180 km/h), and
-          <strong>rich multimodal annotations</strong> (3D perception, trajectory, and VQA pairs).
+  <!-- ============================================ -->
+  <!-- 4. KEY STATS                                 -->
+  <!-- ============================================ -->
+  <section class="relative py-16">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+        <div class="reveal stat-card lift rounded-2xl p-7">
+          <div class="text-[10px] font-mono tracking-[0.18em] text-ink-500 uppercase mb-3">Scenes</div>
+          <div class="font-display font-semibold num text-5xl lg:text-6xl leading-none text-ink-900">150K</div>
+          <div class="mt-3 text-sm text-ink-500">Unique real-world scenes</div>
+        </div>
+        <div class="reveal stat-card lift rounded-2xl p-7">
+          <div class="text-[10px] font-mono tracking-[0.18em] text-ink-500 uppercase mb-3">Videos</div>
+          <div class="font-display font-semibold num text-5xl lg:text-6xl leading-none text-ink-900">1M+</div>
+          <div class="mt-3 text-sm text-ink-500">Multi-camera recordings</div>
+        </div>
+        <div class="reveal stat-card lift rounded-2xl p-7">
+          <div class="text-[10px] font-mono tracking-[0.18em] text-ink-500 uppercase mb-3">Frames</div>
+          <div class="font-display font-semibold num text-5xl lg:text-6xl leading-none text-ink-900">150M</div>
+          <div class="mt-3 text-sm text-ink-500">High-resolution frames</div>
+        </div>
+        <div class="reveal stat-card lift rounded-2xl p-7">
+          <div class="text-[10px] font-mono tracking-[0.18em] text-ink-500 uppercase mb-3">Atmospheres</div>
+          <div class="font-display font-semibold num text-5xl lg:text-6xl leading-none text-ink-900">9</div>
+          <div class="mt-3 text-sm text-ink-500">Weather &amp; lighting types</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 5. TEASER                                    -->
+  <!-- ============================================ -->
+  <section class="relative py-12 lg:py-16">
+    <div class="mx-auto max-w-6xl px-5 lg:px-8">
+      <div class="reveal text-center mb-10">
+        <h2 class="font-display text-3xl lg:text-5xl mb-4" style="font-weight: 600; letter-spacing: -0.035em; line-height: 1.05;">
+          Scale. Diversity. <span class="accent-text">Rich annotations.</span>
+        </h2>
+        <p class="text-ink-500 max-w-3xl mx-auto leading-relaxed">
+          DiverseAD delivers three key advantages: large-scale real-world data, high environmental diversity,
+          and rich multimodal annotations for perception, planning, and VQA.
+        </p>
+      </div>
+
+      <div class="reveal gradient-border p-3 lg:p-4">
+        <div class="rounded-2xl overflow-hidden bg-white">
+          <img src="./static/images/teaser.png" alt="DiverseAD Overview" class="w-full" />
+        </div>
+      </div>
+      <p class="caption reveal max-w-4xl mx-auto">
+        <strong class="text-ink-900">Figure 1: Overview of DiverseAD.</strong>
+        DiverseAD delivers three key advantages:
+        <strong>large-scale real-world data</strong> (150K scenes, 1M videos, 150M frames),
+        <strong>high environmental diversity</strong> (9 atmospheric types, 14 road types, 0–180 km/h), and
+        <strong>rich multimodal annotations</strong> (3D perception, trajectory, and VQA pairs).
+      </p>
+    </div>
+  </section>
+
+  <div class="grad-line max-w-5xl mx-auto my-8"></div>
+
+  <!-- ============================================ -->
+  <!-- 6. DATASET                                   -->
+  <!-- ============================================ -->
+  <section id="dataset" class="relative py-16 lg:py-20">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="text-center mb-14 reveal">
+        <div class="font-mono text-[13px] uppercase tracking-[0.22em] text-ink-500 mb-4">The DiverseAD Dataset</div>
+        <h2 class="font-display text-4xl lg:text-[3.5rem] mx-auto" style="font-weight: 600; letter-spacing: -0.035em; line-height: 1.02;">
+          Built for <span class="accent-text">real-world complexity.</span>
         </h2>
       </div>
-    </div>
-  </section>
 
-  <!-- Abstract Section -->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Abstract</h2>
-          <div class="content has-text-justified">
-            <p>
-              Strong generalization to diversified atmospheric conditions is crucial for autonomous driving models.
-              However, models trained on existing datasets struggle with real-world complexity due to homogeneous
-              weather, limited maneuvers, and insufficient scale.
-            </p>
-            <p>
-              To overcome this issue, we introduce <strong>DiverseAD</strong>, a large-scale driving dataset comprising
-              <strong>150K scenes</strong> that feature great diversity in atmospheric conditions, road types, and
-              driving actions. Based on this dataset, we further propose a novel end-to-end autonomous driving model
-              robust across diverse atmospheric conditions.
-            </p>
-            <p>
-              Specifically, an <strong>Atmospheric-Invariant Feature Learning</strong> mechanism is proposed, which
-              disentangles atmospheric-agnostic features from visual inputs by using driving intent and scene structure
-              cues as stable anchors. Experiments demonstrate that DiverseAD is superior to existing public datasets in
-              diversity, and our proposed model sets a new standard for end-to-end planning robustness in challenging
-              weather.
-            </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14">
+        <div class="reveal lift rounded-2xl p-8 bg-white border border-ink-100/70">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5 text-orange-700 bg-orange-50">
+            <i class="fa-solid fa-cubes"></i>
           </div>
+          <div class="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-500 mb-3">01 · Scale</div>
+          <h3 class="font-display font-semibold text-[1.35rem] mb-3 text-ink-900" style="letter-spacing: -0.02em;">Large-Scale Real-World Data</h3>
+          <p class="text-ink-500 text-[0.97rem]" style="line-height: 1.7;">
+            Captured across vast real-world environments featuring <span class="font-semibold text-ink-700">150K unique scenes</span>, over
+            <span class="font-semibold text-ink-700">1 Million videos</span>, and more than
+            <span class="font-semibold text-ink-700">150 Million frames</span> recorded with a multi-camera array.
+          </p>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Dataset Features Section -->
-  <section class="section" style="background-color: #f9fafb;">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-full">
-          <h2 class="title is-3">The DiverseAD Dataset</h2>
-        </div>
-      </div>
-
-      <!-- 3 Key Features -->
-      <div class="columns is-multiline">
-        <div class="column is-4">
-          <div class="box" style="height: 100%;">
-            <h4 class="title is-5"><i class="fas fa-cubes" style="color: #3273dc;"></i> Large-Scale Real-World Data</h4>
-            <p>Captured across vast real-world environments featuring <strong>150K unique scenes</strong>, over
-              <strong>1 Million videos</strong>, and more than <strong>150 Million frames</strong> recorded with a
-              multi-camera array.</p>
+        <div class="reveal lift rounded-2xl p-8 bg-white border border-ink-100/70">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5 text-orange-700 bg-orange-50">
+            <i class="fa-solid fa-cloud-sun-rain"></i>
           </div>
+          <div class="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-500 mb-3">02 · Diversity</div>
+          <h3 class="font-display font-semibold text-[1.35rem] mb-3 text-ink-900" style="letter-spacing: -0.02em;">Exceptional Diversity</h3>
+          <p class="text-ink-500 text-[0.97rem]" style="line-height: 1.7;">
+            Covers <span class="font-semibold text-ink-700">9 atmospheric types</span> (Bright, Dark, Dusty, Foggy, Glare, Rainy, Snowy, Sunny, Windy),
+            <span class="font-semibold text-ink-700">14 road typologies</span>, and vehicle speeds spanning
+            <span class="font-semibold text-ink-700">0 to 180 km/h</span> across various driving behaviors.
+          </p>
         </div>
-        <div class="column is-4">
-          <div class="box" style="height: 100%;">
-            <h4 class="title is-5"><i class="fas fa-cloud-sun-rain" style="color: #ff3860;"></i> Exceptional Diversity
-            </h4>
-            <p>Covers <strong>9 atmospheric types</strong> (Bright, Dark, Dusty, Foggy, Glare, Rainy, Snowy, Sunny,
-              Windy), <strong>14 road typologies</strong>, and vehicle speeds spanning <strong>0 to 180 km/h</strong>
-              across various driving behaviors.</p>
+
+        <div class="reveal lift rounded-2xl p-8 bg-white border border-ink-100/70">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5 text-orange-700 bg-orange-50">
+            <i class="fa-solid fa-tags"></i>
           </div>
-        </div>
-        <div class="column is-4">
-          <div class="box" style="height: 100%;">
-            <h4 class="title is-5"><i class="fas fa-tags" style="color: #23d160;"></i> Comprehensive Annotations</h4>
-            <p>Features 7-camera RGB videos, synchronized LiDAR point clouds, 3D bounding boxes, lane boundaries,
-              real-time ego trajectories, and natural language descriptions with <strong>VQA pairs</strong>.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Dataset Sensors & Statistics Images -->
-      <div class="columns is-centered" style="margin-top: 20px;">
-        <div class="column is-half has-text-centered">
-          <!-- 【图片位置 2】：请放置论文中的 Fig. 2 (Sensor configuration & Word clouds) -->
-          <img src="./static/images/sensor_and_cloud.png" alt="Sensor Setup & Word Cloud"
-            style="max-width: 100%; border-radius: 6px;">
-          <p class="caption"><strong>Figure 2:</strong> Sensor configuration (IMU, GPS, LiDAR, 7 Cameras) and scene
-            description word clouds.</p>
-        </div>
-        <div class="column is-half has-text-centered">
-          <!-- 【图片位置 3】：请放置论文中的 Fig. 3 (Dataset Statistics Charts) -->
-          <img src="./static/images/dataset_stats.png" alt="Dataset Statistics"
-            style="max-width: 100%; border-radius: 6px;">
-          <p class="caption"><strong>Figure 3:</strong> Distributions of atmospheric conditions, road types, vehicle
-            velocity (vs. nuScenes), and driving behaviors.</p>
+          <div class="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-500 mb-3">03 · Annotations</div>
+          <h3 class="font-display font-semibold text-[1.35rem] mb-3 text-ink-900" style="letter-spacing: -0.02em;">Comprehensive Annotations</h3>
+          <p class="text-ink-500 text-[0.97rem]" style="line-height: 1.7;">
+            Features 7-camera RGB videos, synchronized LiDAR point clouds, 3D bounding boxes, lane boundaries,
+            real-time ego trajectories, and natural language descriptions with
+            <span class="font-semibold text-ink-700">VQA pairs</span>.
+          </p>
         </div>
       </div>
 
-      <!-- Comparison Table (Table 1 in Paper) -->
-      <div class="content" style="margin-top: 30px;">
-        <h4 class="title is-5 has-text-centered">Comparison with Existing Autonomous Driving Datasets</h4>
-        <div class="table-container">
-          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth has-text-centered">
-            <thead>
-              <tr>
-                <th>Dataset</th>
-                <th>Year</th>
-                <th>Cameras</th>
-                <th>Scenes</th>
-                <th>Frames</th>
-                <th>LiDAR</th>
-                <th>Atmospheric Conditions</th>
-                <th>Task</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Foggy Zurich</td>
-                <td>2018</td>
-                <td>1</td>
-                <td>-</td>
-                <td>3,808</td>
-                <td>✗</td>
-                <td>Foggy</td>
-                <td>Perc.</td>
-              </tr>
-              <tr>
-                <td>BDD100K</td>
-                <td>2020</td>
-                <td>1</td>
-                <td>100K</td>
-                <td>-</td>
-                <td>✗</td>
-                <td>Rainy, foggy, snowy, dark</td>
-                <td>Perc.</td>
-              </tr>
-              <tr>
-                <td>ACDC</td>
-                <td>2021</td>
-                <td>1</td>
-                <td>-</td>
-                <td>8,012</td>
-                <td>✗</td>
-                <td>Rainy, foggy, snowy, dark</td>
-                <td>Perc.</td>
-              </tr>
-              <tr>
-                <td>nuScenes</td>
-                <td>2019</td>
-                <td>6</td>
-                <td>1K</td>
-                <td>40K</td>
-                <td>✓</td>
-                <td>Normal</td>
-                <td>Plan.</td>
-              </tr>
-              <tr>
-                <td>Waymo E2E</td>
-                <td>2019</td>
-                <td>8</td>
-                <td>4K</td>
-                <td>-</td>
-                <td>✗</td>
-                <td>Normal</td>
-                <td>Plan.</td>
-              </tr>
-              <tr>
-                <td>nuPlan</td>
-                <td>2021</td>
-                <td>6</td>
-                <td>15K</td>
-                <td>-</td>
-                <td>✓</td>
-                <td>Normal</td>
-                <td>Plan.</td>
-              </tr>
-              <tr class="has-text-weight-bold" style="background-color: #eef6fc;">
-                <td>DiverseAD (Ours)</td>
-                <td>2026</td>
-                <td>7</td>
-                <td>150K</td>
-                <td>150M</td>
-                <td>✓</td>
-                <td>Rainy, foggy, snowy, dark, bright, dusty, glare, sunny, windy</td>
-                <td>Plan.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- VQA Pipeline Section -->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column is-full has-text-centered">
-          <h2 class="title is-3">VQA Annotation Pipeline</h2>
-          <!-- 【图片位置 4】：请放置论文中的 Fig. 4(a) (VQA annotation pipeline) -->
-          <img src="./static/images/vqa_pipeline.png" alt="VQA Pipeline"
-            style="max-width: 90%; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-          <div class="content has-text-justified" style="margin-top: 15px;">
-            <p>
-              To advance research in Vision-Language-Action (VLA) models, we establish a scalable VQA generation
-              pipeline:
-            </p>
-            <ul>
-              <li><strong>Scene Graph Construction:</strong> Building relational graphs from 3D bounding boxes projected
-                onto Bird's-Eye-View (BEV).</li>
-              <li><strong>Template Design:</strong> Formulating query templates covering existence, counting, and object
-                status.</li>
-              <li><strong>Instantiation via Search:</strong> Programmatically deducing answers via Depth-First Search
-                (DFS) along semantic scene graph paths.</li>
-              <li><strong>Automated Post-Processing:</strong> Combining VLM-based filtering and manual validation to
-                prune ill-posed queries.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Method Section -->
-  <section class="section" style="background-color: #f9fafb;">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column is-full has-text-centered">
-          <h2 class="title is-3">Method: Atmospheric-Invariant Feature Learning</h2>
-          <!-- 【图片位置 5】：请放置论文中的 Fig. 4(b) (Overview of Autonomous Driving Model) -->
-          <img src="./static/images/framework.png" alt="Method Framework"
-            style="max-width: 95%; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-          <div class="content has-text-justified" style="margin-top: 20px;">
-            <p>
-              Standard end-to-end models often overfit to transient atmospheric perturbations (fog, heavy rain,
-              nighttime glare). We disentangle driving-critical features from weather noise by introducing two auxiliary
-              invariant anchors:
-            </p>
-            <div class="columns">
-              <div class="column is-6">
-                <div class="box">
-                  <h5 class="title is-5">1. Driving-Intent Anchoring (\(\mathcal{L}_{int}\))</h5>
-                  <p>
-                    Instead of absolute coordinates, we normalize instantaneous displacement vectors \(\hat{v}_k\) to
-                    compute pairwise intent similarity:
-                    $$S^{ij}_{int} = \frac{1}{K-1} \sum_{k=1}^{K-1} \hat{v}_k^i \cdot \hat{v}_k^j$$
-                    A soft KL-divergence constraint aligns visual representations of scenes sharing identical maneuvers
-                    across different domains.
-                  </p>
-                </div>
-              </div>
-              <div class="column is-6">
-                <div class="box">
-                  <h5 class="title is-5">2. Scene-Structure Anchoring (\(\mathcal{L}_{str}\))</h5>
-                  <p>
-                    We leverage a pre-trained foundation model (<strong>DINOv3</strong>) as a frozen structure expert
-                    \(\Phi\). By converting feature cosine similarity into Gaussian-weighted targets:
-                    $$w^{ij}_{str} = \exp\left(-\frac{(1 - S^{ij}_{str})^2}{\sigma_{str}^2}\right)$$
-                    the policy network distills invariant structural layouts while shedding domain-variant style
-                    variations.
-                  </p>
-                </div>
-              </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-14">
+        <div class="reveal">
+          <div class="gradient-border p-3">
+            <div class="rounded-2xl overflow-hidden bg-white">
+              <img src="./static/images/sensor_and_cloud.png" alt="Sensor Setup & Word Cloud" class="w-full" />
             </div>
           </div>
+          <p class="caption">
+            <strong class="text-ink-900">Figure 2:</strong> Sensor configuration (IMU, GPS, LiDAR, 7 Cameras) and scene description word clouds.
+          </p>
+        </div>
+        <div class="reveal">
+          <div class="gradient-border p-3">
+            <div class="rounded-2xl overflow-hidden bg-white">
+              <img src="./static/images/dataset_stats.png" alt="Dataset Statistics" class="w-full" />
+            </div>
+          </div>
+          <p class="caption">
+            <strong class="text-ink-900">Figure 3:</strong> Distributions of atmospheric conditions, road types, vehicle velocity (vs. nuScenes), and driving behaviors.
+          </p>
+        </div>
+      </div>
+
+      <div class="reveal rounded-2xl bg-white border border-ink-100/70 p-6 lg:p-10 overflow-x-auto">
+        <h3 class="font-display font-semibold text-2xl mb-2 text-ink-900 text-center" style="letter-spacing: -0.025em;">
+          Comparison with Existing Autonomous Driving Datasets
+        </h3>
+        <p class="text-[0.95rem] text-ink-500 mb-7 leading-relaxed text-center max-w-3xl mx-auto">
+          DiverseAD offers substantially larger scale and broader atmospheric coverage than prior perception and planning datasets.
+        </p>
+        <table class="ftable">
+          <thead>
+            <tr>
+              <th class="!text-left">Dataset</th>
+              <th>Year</th>
+              <th>Cameras</th>
+              <th>Scenes</th>
+              <th>Frames</th>
+              <th>LiDAR</th>
+              <th>Atmospheric Conditions</th>
+              <th>Task</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="name">Foggy Zurich</td>
+              <td class="num-cell">2018</td>
+              <td class="num-cell">1</td>
+              <td class="num-cell">-</td>
+              <td class="num-cell">3,808</td>
+              <td class="type-cell">✗</td>
+              <td class="type-cell">Foggy</td>
+              <td class="type-cell">Perc.</td>
+            </tr>
+            <tr>
+              <td class="name">BDD100K</td>
+              <td class="num-cell">2020</td>
+              <td class="num-cell">1</td>
+              <td class="num-cell">100K</td>
+              <td class="num-cell">-</td>
+              <td class="type-cell">✗</td>
+              <td class="type-cell">Rainy, foggy, snowy, dark</td>
+              <td class="type-cell">Perc.</td>
+            </tr>
+            <tr>
+              <td class="name">ACDC</td>
+              <td class="num-cell">2021</td>
+              <td class="num-cell">1</td>
+              <td class="num-cell">-</td>
+              <td class="num-cell">8,012</td>
+              <td class="type-cell">✗</td>
+              <td class="type-cell">Rainy, foggy, snowy, dark</td>
+              <td class="type-cell">Perc.</td>
+            </tr>
+            <tr>
+              <td class="name">nuScenes</td>
+              <td class="num-cell">2019</td>
+              <td class="num-cell">6</td>
+              <td class="num-cell">1K</td>
+              <td class="num-cell">40K</td>
+              <td class="type-cell">✓</td>
+              <td class="type-cell">Normal</td>
+              <td class="type-cell">Plan.</td>
+            </tr>
+            <tr>
+              <td class="name">Waymo E2E</td>
+              <td class="num-cell">2019</td>
+              <td class="num-cell">8</td>
+              <td class="num-cell">4K</td>
+              <td class="num-cell">-</td>
+              <td class="type-cell">✗</td>
+              <td class="type-cell">Normal</td>
+              <td class="type-cell">Plan.</td>
+            </tr>
+            <tr>
+              <td class="name">nuPlan</td>
+              <td class="num-cell">2021</td>
+              <td class="num-cell">6</td>
+              <td class="num-cell">15K</td>
+              <td class="num-cell">-</td>
+              <td class="type-cell">✓</td>
+              <td class="type-cell">Normal</td>
+              <td class="type-cell">Plan.</td>
+            </tr>
+            <tr class="highlight">
+              <td class="name">★ DiverseAD (Ours)</td>
+              <td class="num-cell best">2026</td>
+              <td class="num-cell best">7</td>
+              <td class="num-cell best">150K</td>
+              <td class="num-cell best">150M</td>
+              <td class="type-cell" style="color:#9A3412; font-weight:700;">✓</td>
+              <td class="type-cell" style="color:#9A3412; font-weight:600;">Rainy, foggy, snowy, dark, bright, dusty, glare, sunny, windy</td>
+              <td class="type-cell" style="color:#9A3412; font-weight:700;">Plan.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="grad-line max-w-5xl mx-auto my-8"></div>
+
+  <!-- ============================================ -->
+  <!-- 7. VQA PIPELINE                              -->
+  <!-- ============================================ -->
+  <section id="vqa" class="relative py-16 lg:py-20">
+    <div class="mx-auto max-w-6xl px-5 lg:px-8">
+      <div class="text-center mb-12 reveal">
+        <div class="font-mono text-[13px] uppercase tracking-[0.22em] text-ink-500 mb-4">VQA Annotation</div>
+        <h2 class="font-display text-4xl lg:text-[3.5rem]" style="font-weight: 600; letter-spacing: -0.035em; line-height: 1.02;">
+          A scalable <span class="accent-text">VQA pipeline</span>
+        </h2>
+        <p class="text-ink-500 max-w-2xl mx-auto mt-5 leading-relaxed">
+          To advance research in Vision-Language-Action (VLA) models, we establish a scalable VQA generation pipeline.
+        </p>
+      </div>
+
+      <div class="reveal gradient-border p-3 lg:p-4 mb-10">
+        <div class="rounded-2xl overflow-hidden bg-white">
+          <img src="./static/images/vqa_pipeline.png" alt="VQA Pipeline" class="w-full" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="reveal rounded-2xl p-7 bg-white border border-ink-100/70 lift">
+          <div class="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-500 mb-3">Step 1</div>
+          <h4 class="font-display font-semibold text-xl mb-2 text-ink-900">Scene Graph Construction</h4>
+          <p class="text-ink-500 text-[0.97rem]" style="line-height: 1.7;">
+            Building relational graphs from 3D bounding boxes projected onto Bird's-Eye-View (BEV).
+          </p>
+        </div>
+        <div class="reveal rounded-2xl p-7 bg-white border border-ink-100/70 lift">
+          <div class="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-500 mb-3">Step 2</div>
+          <h4 class="font-display font-semibold text-xl mb-2 text-ink-900">Template Design</h4>
+          <p class="text-ink-500 text-[0.97rem]" style="line-height: 1.7;">
+            Formulating query templates covering existence, counting, and object status.
+          </p>
+        </div>
+        <div class="reveal rounded-2xl p-7 bg-white border border-ink-100/70 lift">
+          <div class="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-500 mb-3">Step 3</div>
+          <h4 class="font-display font-semibold text-xl mb-2 text-ink-900">Instantiation via Search</h4>
+          <p class="text-ink-500 text-[0.97rem]" style="line-height: 1.7;">
+            Programmatically deducing answers via Depth-First Search (DFS) along semantic scene graph paths.
+          </p>
+        </div>
+        <div class="reveal rounded-2xl p-7 bg-white border border-ink-100/70 lift">
+          <div class="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-500 mb-3">Step 4</div>
+          <h4 class="font-display font-semibold text-xl mb-2 text-ink-900">Automated Post-Processing</h4>
+          <p class="text-ink-500 text-[0.97rem]" style="line-height: 1.7;">
+            Combining VLM-based filtering and manual validation to prune ill-posed queries.
+          </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Experimental Results Section -->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-full">
-          <h2 class="title is-3">Experimental Results</h2>
+  <div class="grad-line max-w-5xl mx-auto my-8"></div>
+
+  <!-- ============================================ -->
+  <!-- 8. METHOD                                    -->
+  <!-- ============================================ -->
+  <section id="method" class="relative py-16 lg:py-24">
+    <div class="relative mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="text-center mb-14 reveal">
+        <div class="font-mono text-[13px] uppercase tracking-[0.22em] text-ink-500 mb-4">Method</div>
+        <h2 class="font-display text-4xl lg:text-[3.5rem]" style="font-weight: 600; letter-spacing: -0.035em; line-height: 1.02;">
+          Atmospheric-Invariant <span class="accent-text">Feature Learning</span>
+        </h2>
+        <p class="text-ink-500 max-w-3xl mx-auto mt-5 leading-relaxed">
+          Standard end-to-end models often overfit to transient atmospheric perturbations.
+          We disentangle driving-critical features from weather noise by introducing two auxiliary invariant anchors.
+        </p>
+      </div>
+
+      <div class="reveal gradient-border p-3 lg:p-4 mb-12">
+        <div class="rounded-2xl overflow-hidden bg-white">
+          <img src="./static/images/framework.png" alt="Method Framework" class="w-full" />
         </div>
       </div>
 
-      <!-- Table 2: Benchmark Performance on DiverseAD -->
-      <div class="content">
-        <h4 class="title is-5 has-text-centered">Planning Performance Across Diverse Atmospheric Conditions (DiverseAD)
-        </h4>
-        <div class="table-container">
-          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth has-text-centered">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        <div class="reveal mode-card mode-intent">
+          <div class="relative h-full flex flex-col">
+            <div class="flex items-center justify-between mb-6">
+              <div class="font-mono text-[0.72rem] tracking-[0.18em] uppercase font-semibold" style="color:#C2410C;">Anchor 1</div>
+              <div class="w-11 h-11 rounded-xl flex items-center justify-center bg-orange-50 text-orange-700">
+                <i class="fa-solid fa-route"></i>
+              </div>
+            </div>
+            <h3 class="font-display font-semibold text-2xl lg:text-3xl mb-3 text-ink-900" style="letter-spacing: -0.03em;">
+              Driving-Intent Anchoring
+            </h3>
+            <div class="font-mono text-[0.9rem] tracking-wide text-ink-400 mb-5">\(\mathcal{L}_{int}\)</div>
+            <p class="text-ink-500 text-[1.02rem] mb-5" style="line-height: 1.65;">
+              Instead of absolute coordinates, we normalize instantaneous displacement vectors \(\hat{v}_k\) to
+              compute pairwise intent similarity:
+            </p>
+            <div class="rounded-xl bg-ink-50 px-4 py-4 mb-5 text-center text-ink-700 overflow-x-auto">
+              \[ S^{ij}_{int} = \frac{1}{K-1} \sum_{k=1}^{K-1} \hat{v}_k^i \cdot \hat{v}_k^j \]
+            </div>
+            <p class="text-ink-500 text-[0.97rem] mt-auto" style="line-height: 1.65;">
+              A soft KL-divergence constraint aligns visual representations of scenes sharing identical maneuvers
+              across different domains.
+            </p>
+          </div>
+        </div>
+
+        <div class="reveal mode-card mode-struct">
+          <div class="relative h-full flex flex-col">
+            <div class="flex items-center justify-between mb-6">
+              <div class="font-mono text-[0.72rem] tracking-[0.18em] uppercase font-semibold" style="color:#B45309;">Anchor 2</div>
+              <div class="w-11 h-11 rounded-xl flex items-center justify-center bg-amber-50 text-amber-700">
+                <i class="fa-solid fa-layer-group"></i>
+              </div>
+            </div>
+            <h3 class="font-display font-semibold text-2xl lg:text-3xl mb-3 text-ink-900" style="letter-spacing: -0.03em;">
+              Scene-Structure Anchoring
+            </h3>
+            <div class="font-mono text-[0.9rem] tracking-wide text-ink-400 mb-5">\(\mathcal{L}_{str}\)</div>
+            <p class="text-ink-500 text-[1.02rem] mb-5" style="line-height: 1.65;">
+              We leverage a pre-trained foundation model (<strong class="text-ink-700">DINOv3</strong>) as a frozen structure expert \(\Phi\).
+              By converting feature cosine similarity into Gaussian-weighted targets:
+            </p>
+            <div class="rounded-xl bg-ink-50 px-4 py-4 mb-5 text-center text-ink-700 overflow-x-auto">
+              \[ w^{ij}_{str} = \exp\left(-\frac{(1 - S^{ij}_{str})^2}{\sigma_{str}^2}\right) \]
+            </div>
+            <p class="text-ink-500 text-[0.97rem] mt-auto" style="line-height: 1.65;">
+              The policy network distills invariant structural layouts while shedding domain-variant style variations.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="grad-line max-w-5xl mx-auto my-8"></div>
+
+  <!-- ============================================ -->
+  <!-- 9. EXPERIMENTS                               -->
+  <!-- ============================================ -->
+  <section id="experiments" class="relative py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="text-center mb-12 reveal">
+        <div class="font-mono text-[13px] uppercase tracking-[0.22em] text-ink-500 mb-4">Experiments</div>
+        <h2 class="font-display text-4xl lg:text-[3.5rem]" style="font-weight: 600; letter-spacing: -0.035em; line-height: 1.02;">
+          Robust planning under <span class="accent-text">challenging weather.</span>
+        </h2>
+      </div>
+
+      <div class="reveal flex justify-center mb-10">
+        <div class="inline-flex glass rounded-full p-1.5 gap-1">
+          <button data-tab="diversead" class="tab-pill px-5 lg:px-7 py-2.5 rounded-full text-sm font-medium transition-all" aria-selected="true">
+            DiverseAD Benchmark
+          </button>
+          <button data-tab="nuscenes" class="tab-pill px-5 lg:px-7 py-2.5 rounded-full text-sm font-medium transition-all" aria-selected="false">
+            nuScenes Benchmark
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab: DiverseAD -->
+      <div id="tab-diversead" class="tab-panel reveal">
+        <div class="rounded-2xl bg-white border border-ink-100/70 p-6 lg:p-10 mb-8 overflow-x-auto">
+          <h3 class="font-display font-semibold text-2xl mb-2 text-ink-900" style="letter-spacing: -0.025em;">
+            Planning Performance Across Diverse Atmospheric Conditions
+          </h3>
+          <p class="text-[0.95rem] text-ink-500 mb-7 leading-relaxed max-w-3xl">
+            End-to-end planning L2 displacement and VQA accuracy on the DiverseAD benchmark.
+            <span class="font-semibold text-ink-700">*</span> indicates models fine-tuned on the DiverseAD training split.
+          </p>
+          <table class="ftable">
             <thead>
               <tr>
-                <th rowspan="2" style="vertical-align: middle;">Method</th>
-                <th colspan="4">All - L2 (m) ↓</th>
-                <th rowspan="2" style="vertical-align: middle;">VQA Acc. (%) ↑</th>
+                <th class="!text-left" rowspan="2">Method</th>
+                <th colspan="4">All — L2 (m) ↓</th>
+                <th rowspan="2">VQA Acc. (%) ↑</th>
               </tr>
               <tr>
                 <th>1s</th>
@@ -400,83 +871,105 @@
             </thead>
             <tbody>
               <tr>
-                <td>UniAD (CVPR'23)</td>
-                <td>15.40</td>
-                <td>31.11</td>
-                <td>46.99</td>
-                <td>31.17</td>
-                <td>-</td>
+                <td class="name">UniAD (CVPR'23)</td>
+                <td class="num-cell">15.40</td>
+                <td class="num-cell">31.11</td>
+                <td class="num-cell">46.99</td>
+                <td class="num-cell">31.17</td>
+                <td class="num-cell">-</td>
               </tr>
               <tr>
-                <td>UniAD*</td>
-                <td>1.04</td>
-                <td>2.06</td>
-                <td>3.23</td>
-                <td>2.11</td>
-                <td>-</td>
+                <td class="name">UniAD*</td>
+                <td class="num-cell">1.04</td>
+                <td class="num-cell">2.06</td>
+                <td class="num-cell">3.23</td>
+                <td class="num-cell">2.11</td>
+                <td class="num-cell">-</td>
               </tr>
               <tr>
-                <td>VAD (ICCV'23)</td>
-                <td>15.01</td>
-                <td>30.02</td>
-                <td>44.97</td>
-                <td>30.00</td>
-                <td>-</td>
+                <td class="name">VAD (ICCV'23)</td>
+                <td class="num-cell">15.01</td>
+                <td class="num-cell">30.02</td>
+                <td class="num-cell">44.97</td>
+                <td class="num-cell">30.00</td>
+                <td class="num-cell">-</td>
               </tr>
               <tr>
-                <td>VAD*</td>
-                <td>0.72</td>
-                <td>1.67</td>
-                <td>2.69</td>
-                <td>1.69</td>
-                <td>-</td>
+                <td class="name">VAD*</td>
+                <td class="num-cell">0.72</td>
+                <td class="num-cell">1.67</td>
+                <td class="num-cell">2.69</td>
+                <td class="num-cell">1.69</td>
+                <td class="num-cell">-</td>
               </tr>
               <tr>
-                <td>OpenEMMA* (arXiv'24)</td>
-                <td>0.71</td>
-                <td>1.60</td>
-                <td>2.67</td>
-                <td>1.66</td>
-                <td>60.28</td>
+                <td class="name">OpenEMMA* (arXiv'24)</td>
+                <td class="num-cell">0.71</td>
+                <td class="num-cell">1.60</td>
+                <td class="num-cell">2.67</td>
+                <td class="num-cell">1.66</td>
+                <td class="num-cell">60.28</td>
               </tr>
               <tr>
-                <td>OmniDrive* (CVPR'25)</td>
-                <td>0.61</td>
-                <td>1.45</td>
-                <td>2.50</td>
-                <td>1.52</td>
-                <td>64.51</td>
+                <td class="name">OmniDrive* (CVPR'25)</td>
+                <td class="num-cell">0.61</td>
+                <td class="num-cell">1.45</td>
+                <td class="num-cell">2.50</td>
+                <td class="num-cell">1.52</td>
+                <td class="num-cell">64.51</td>
               </tr>
               <tr>
-                <td>FSDrive* (NeurIPS'25)</td>
-                <td>0.59</td>
-                <td>1.38</td>
-                <td>2.34</td>
-                <td>1.44</td>
-                <td>65.33</td>
+                <td class="name">FSDrive* (NeurIPS'25)</td>
+                <td class="num-cell">0.59</td>
+                <td class="num-cell">1.38</td>
+                <td class="num-cell">2.34</td>
+                <td class="num-cell">1.44</td>
+                <td class="num-cell">65.33</td>
               </tr>
-              <tr class="has-text-weight-bold" style="background-color: #eef6fc;">
-                <td>Ours</td>
-                <td>0.53</td>
-                <td>1.21</td>
-                <td>1.99</td>
-                <td>1.24</td>
-                <td>72.68</td>
+              <tr class="highlight">
+                <td class="name">★ Ours</td>
+                <td class="num-cell best">0.53</td>
+                <td class="num-cell best">1.21</td>
+                <td class="num-cell best">1.99</td>
+                <td class="num-cell best">1.24</td>
+                <td class="num-cell best">72.68</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <p class="is-size-7 has-text-grey">* indicates models fine-tuned on the DiverseAD training split.</p>
+
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="rounded-2xl p-6 bg-white border border-ink-100/70 lift">
+            <div class="text-[10px] font-mono uppercase tracking-[0.18em] text-ink-500 mb-3">Avg. L2 ↓</div>
+            <div class="font-display font-semibold num text-4xl accent-text">1.24<span class="text-2xl text-ink-400 font-medium">m</span></div>
+            <div class="text-[0.85rem] text-ink-500 mt-2">Best planning accuracy</div>
+          </div>
+          <div class="rounded-2xl p-6 bg-white border border-ink-100/70 lift">
+            <div class="text-[10px] font-mono uppercase tracking-[0.18em] text-ink-500 mb-3">VQA Acc. ↑</div>
+            <div class="font-display font-semibold num text-4xl accent-text">72.68<span class="text-2xl text-ink-400 font-medium">%</span></div>
+            <div class="text-[0.85rem] text-ink-500 mt-2">+7.35% over FSDrive*</div>
+          </div>
+          <div class="rounded-2xl p-6 bg-white border border-ink-100/70 lift col-span-2 lg:col-span-1">
+            <div class="text-[10px] font-mono uppercase tracking-[0.18em] text-ink-500 mb-3">3s L2 ↓</div>
+            <div class="font-display font-semibold num text-4xl accent-text">1.99<span class="text-2xl text-ink-400 font-medium">m</span></div>
+            <div class="text-[0.85rem] text-ink-500 mt-2">Strong long-horizon planning</div>
+          </div>
+        </div>
       </div>
 
-      <!-- Table 4: Benchmark on nuScenes -->
-      <div class="content" style="margin-top: 40px;">
-        <h4 class="title is-5 has-text-centered">End-to-End Planning on nuScenes Benchmark</h4>
-        <div class="table-container">
-          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth has-text-centered">
+      <!-- Tab: nuScenes -->
+      <div id="tab-nuscenes" class="tab-panel hidden">
+        <div class="rounded-2xl bg-white border border-ink-100/70 p-6 lg:p-10 overflow-x-auto">
+          <h3 class="font-display font-semibold text-2xl mb-2 text-ink-900" style="letter-spacing: -0.025em;">
+            End-to-End Planning on nuScenes Benchmark
+          </h3>
+          <p class="text-[0.95rem] text-ink-500 mb-7 leading-relaxed max-w-3xl">
+            L2 displacement and collision rate comparison against strong end-to-end planning baselines.
+          </p>
+          <table class="ftable">
             <thead>
               <tr>
-                <th rowspan="2" style="vertical-align: middle;">Method</th>
+                <th class="!text-left" rowspan="2">Method</th>
                 <th colspan="4">L2 Displacement (m) ↓</th>
                 <th colspan="4">Collision Rate (%) ↓</th>
               </tr>
@@ -493,109 +986,179 @@
             </thead>
             <tbody>
               <tr>
-                <td>UniAD</td>
-                <td>0.48</td>
-                <td>0.96</td>
-                <td>1.65</td>
-                <td>1.03</td>
-                <td>0.05</td>
-                <td>0.17</td>
-                <td>0.71</td>
-                <td>0.31</td>
+                <td class="name">UniAD</td>
+                <td class="num-cell">0.48</td>
+                <td class="num-cell">0.96</td>
+                <td class="num-cell">1.65</td>
+                <td class="num-cell">1.03</td>
+                <td class="num-cell">0.05</td>
+                <td class="num-cell">0.17</td>
+                <td class="num-cell">0.71</td>
+                <td class="num-cell">0.31</td>
               </tr>
               <tr>
-                <td>VAD</td>
-                <td>0.41</td>
-                <td>0.70</td>
-                <td>1.05</td>
-                <td>0.72</td>
-                <td>0.07</td>
-                <td>0.18</td>
-                <td>0.43</td>
-                <td>0.23</td>
+                <td class="name">VAD</td>
+                <td class="num-cell">0.41</td>
+                <td class="num-cell">0.70</td>
+                <td class="num-cell">1.05</td>
+                <td class="num-cell">0.72</td>
+                <td class="num-cell">0.07</td>
+                <td class="num-cell">0.18</td>
+                <td class="num-cell">0.43</td>
+                <td class="num-cell">0.23</td>
               </tr>
               <tr>
-                <td>GenAD</td>
-                <td>0.28</td>
-                <td>0.49</td>
-                <td>0.78</td>
-                <td>0.52</td>
-                <td>0.08</td>
-                <td>0.14</td>
-                <td>0.34</td>
-                <td>0.19</td>
+                <td class="name">GenAD</td>
+                <td class="num-cell">0.28</td>
+                <td class="num-cell">0.49</td>
+                <td class="num-cell">0.78</td>
+                <td class="num-cell">0.52</td>
+                <td class="num-cell">0.08</td>
+                <td class="num-cell">0.14</td>
+                <td class="num-cell">0.34</td>
+                <td class="num-cell">0.19</td>
               </tr>
               <tr>
-                <td>OmniDrive</td>
-                <td>0.15</td>
-                <td>0.36</td>
-                <td>0.70</td>
-                <td>0.40</td>
-                <td>0.06</td>
-                <td>0.27</td>
-                <td>0.72</td>
-                <td>0.35</td>
+                <td class="name">OmniDrive</td>
+                <td class="num-cell">0.15</td>
+                <td class="num-cell">0.36</td>
+                <td class="num-cell">0.70</td>
+                <td class="num-cell">0.40</td>
+                <td class="num-cell">0.06</td>
+                <td class="num-cell">0.27</td>
+                <td class="num-cell">0.72</td>
+                <td class="num-cell">0.35</td>
               </tr>
               <tr>
-                <td>World4Drive</td>
-                <td>0.23</td>
-                <td>0.47</td>
-                <td>0.81</td>
-                <td>0.50</td>
-                <td>0.02</td>
-                <td>0.12</td>
-                <td>0.33</td>
-                <td>0.16</td>
+                <td class="name">World4Drive</td>
+                <td class="num-cell">0.23</td>
+                <td class="num-cell">0.47</td>
+                <td class="num-cell">0.81</td>
+                <td class="num-cell">0.50</td>
+                <td class="num-cell">0.02</td>
+                <td class="num-cell">0.12</td>
+                <td class="num-cell">0.33</td>
+                <td class="num-cell">0.16</td>
               </tr>
-              <tr class="has-text-weight-bold" style="background-color: #eef6fc;">
-                <td>Ours</td>
-                <td>0.22</td>
-                <td>0.35</td>
-                <td>0.58</td>
-                <td>0.39</td>
-                <td>0.01</td>
-                <td>0.06</td>
-                <td>0.41</td>
-                <td>0.16</td>
+              <tr class="highlight">
+                <td class="name">★ Ours</td>
+                <td class="num-cell">0.22</td>
+                <td class="num-cell best">0.35</td>
+                <td class="num-cell best">0.58</td>
+                <td class="num-cell best">0.39</td>
+                <td class="num-cell best">0.01</td>
+                <td class="num-cell best">0.06</td>
+                <td class="num-cell">0.41</td>
+                <td class="num-cell best">0.16</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- BibTeX Citation Section -->
-  <section class="section" id="BibTeX">
-    <div class="container is-max-desktop content">
-      <h2 class="title">BibTeX</h2>
-      <pre><code>@article{wang2026diversead,
+  <!-- ============================================ -->
+  <!-- 10. BIBTEX                                   -->
+  <!-- ============================================ -->
+  <section id="bibtex" class="relative py-16 lg:py-24">
+    <div class="mx-auto max-w-5xl px-5 lg:px-8">
+      <div class="text-center mb-10 reveal">
+        <div class="font-mono text-[13px] uppercase tracking-[0.22em] text-ink-500 mb-4">Citation</div>
+        <h2 class="font-display text-4xl lg:text-5xl" style="font-weight: 600; letter-spacing: -0.035em;">
+          Cite <span class="accent-text">DiverseAD</span>
+        </h2>
+      </div>
+
+      <div class="reveal relative">
+        <button id="copyBib" class="absolute top-4 right-4 z-10 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition flex items-center gap-2">
+          <i class="fa-solid fa-copy text-xs"></i>
+          <span id="copyLabel">Copy</span>
+        </button>
+        <pre class="bibtex"><code id="bibText">@article{wang2026diversead,
   title={DiverseAD: A Large-Scale Driving Dataset with Diverse Atmospheric Conditions},
   author={Wang, Haoyu and Ma, Baorui and Di, Donglin and Xuan, Suhang and Li, Hao and Zhang, Shiliang},
   journal={arXiv preprint},
   year={2026}
 }</code></pre>
+      </div>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="columns is-centered">
-        <div class="column is-8 has-text-centered">
-          <p>
-            This website is adapted from the <a href="https://github.com/Flow-WAM/Flow-WAM.github.io"
-              target="_blank">Flow-WAM</a> / <a href="https://github.com/nerfies/nerfies.github.io"
-              target="_blank">Nerfies</a> template.
-            For dataset access or inquiries, please submit the request form or contact <a
-              href="mailto:cshy2mvvton@outlook.com">cshy2mvvton@outlook.com</a>.
-          </p>
+  <!-- ============================================ -->
+  <!-- FOOTER                                       -->
+  <!-- ============================================ -->
+  <footer class="relative py-14 border-t border-ink-100/60">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="flex justify-center items-center gap-6">
+        <div class="flex items-center gap-3">
+          <div class="logo-mark w-10 h-10 text-sm">D</div>
+          <div>
+            <div class="font-display font-semibold text-base accent-text">DiverseAD</div>
+            <div class="text-xs text-ink-400">© 2026 · Peking University &amp; Li Auto</div>
+          </div>
         </div>
+      </div>
+      <div class="mt-6 text-center text-[11px] text-ink-400 max-w-2xl mx-auto leading-relaxed">
+        This website is adapted from the
+        <a href="https://github.com/Flow-WAM/Flow-WAM.github.io" target="_blank" rel="noopener noreferrer" class="underline decoration-dotted hover:text-ink-700">Flow-WAM</a>
+        /
+        <a href="https://github.com/nerfies/nerfies.github.io" target="_blank" rel="noopener noreferrer" class="underline decoration-dotted hover:text-ink-700">Nerfies</a>
+        template.
+        For dataset access or inquiries, please submit the request form or contact
+        <a href="mailto:cshy2mvvton@outlook.com" class="underline decoration-dotted hover:text-ink-700">cshy2mvvton@outlook.com</a>.
       </div>
     </div>
   </footer>
 
-</body>
+  <script>
+    // Scroll reveal
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
+    // Experiment tabs
+    const tabBtns = document.querySelectorAll('.tab-pill');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+    function selectTab(name) {
+      tabBtns.forEach((b) => {
+        const active = b.dataset.tab === name;
+        b.setAttribute('aria-selected', active ? 'true' : 'false');
+        if (active) {
+          b.style.background = '#C2410C';
+          b.style.color = 'white';
+          b.style.boxShadow = '0 4px 14px -6px rgba(194,65,12,0.4)';
+        } else {
+          b.style.background = 'transparent';
+          b.style.color = '#57534E';
+          b.style.boxShadow = 'none';
+        }
+      });
+      tabPanels.forEach((p) => {
+        p.classList.toggle('hidden', p.id !== `tab-${name}`);
+      });
+    }
+    tabBtns.forEach((b) => b.addEventListener('click', () => selectTab(b.dataset.tab)));
+    selectTab('diversead');
+
+    // Copy BibTeX
+    document.getElementById('copyBib')?.addEventListener('click', async () => {
+      const txt = document.getElementById('bibText').innerText;
+      try {
+        await navigator.clipboard.writeText(txt);
+        const label = document.getElementById('copyLabel');
+        label.textContent = 'Copied!';
+        setTimeout(() => (label.textContent = 'Copy'), 1800);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  </script>
+</body>
 </html>
