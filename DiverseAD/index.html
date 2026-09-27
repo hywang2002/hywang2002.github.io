@@ -157,31 +157,30 @@
       transform: translateY(0);
     }
 
-    .logo-mark {
+    .logo-frame {
+      position: relative;
+      border-radius: 9999px;
+      background: #FFFFFF;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 9999px;
-      background: #FFFFFF;
-      color: #C2410C;
-      font-weight: 700;
-      letter-spacing: -0.04em;
       box-shadow:
         0 0 0 1px rgba(28, 25, 23, 0.06),
         0 4px 14px -6px rgba(28, 25, 23, 0.12);
     }
-    .nav-logo {
-      height: 42px;
-      width: auto;
+    .logo-frame img {
       display: block;
-      transition: transform 0.2s ease;
+      width: 78%;
+      height: 78%;
+      object-fit: contain;
+      object-position: center;
     }
-    .nav-logo:hover { transform: scale(1.04); }
-    .hero-logo {
-      width: min(340px, 72vw);
-      height: auto;
-      display: block;
-      filter: drop-shadow(0 14px 28px rgba(28, 25, 23, 0.14));
+    .logo-frame.hero-halo {
+      box-shadow:
+        0 0 0 1px rgba(28, 25, 23, 0.05),
+        0 0 0 8px rgba(28, 25, 23, 0.03),
+        0 14px 40px -16px rgba(28, 25, 23, 0.20);
     }
     .half-figure {
       width: 50%;
@@ -336,7 +335,10 @@
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
       <div class="mt-4 glass rounded-2xl px-5 py-3 flex items-center justify-between">
         <a href="#top" class="flex items-center gap-3 group" aria-label="DiverseAD">
-          <img src="./static/images/logo.png" alt="DiverseAD" class="nav-logo" />
+          <div class="logo-frame w-10 h-10 group-hover:scale-105 transition-transform">
+            <img src="./static/images/logo.png" alt="DiverseAD" />
+          </div>
+          <span class="font-display font-semibold text-lg tracking-tight accent-text">DiverseAD</span>
         </a>
 
         <div class="hidden lg:flex items-center gap-7 text-sm font-medium text-ink-500">
@@ -370,7 +372,9 @@
 
     <div class="relative mx-auto max-w-6xl px-5 lg:px-8 text-center">
       <div class="flex justify-center mb-8 reveal">
-        <img src="./static/images/logo.png" alt="DiverseAD Logo" class="hero-logo animate-float" />
+        <div class="logo-frame hero-halo w-28 h-28 lg:w-32 lg:h-32 animate-float">
+          <img src="./static/images/logo.png" alt="DiverseAD Logo" />
+        </div>
       </div>
 
       <div class="flex justify-center mb-6 reveal">
@@ -1119,7 +1123,9 @@
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
       <div class="flex justify-center items-center gap-6">
         <div class="flex items-center gap-3">
-          <div class="logo-mark w-10 h-10 text-sm">D</div>
+          <div class="logo-frame w-10 h-10">
+            <img src="./static/images/logo.png" alt="DiverseAD" />
+          </div>
           <div>
             <div class="font-display font-semibold text-base accent-text">DiverseAD</div>
             <div class="text-xs text-ink-400">© 2026 · Peking University &amp; Li Auto</div>
