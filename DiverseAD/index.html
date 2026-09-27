@@ -170,11 +170,30 @@
         0 0 0 1px rgba(28, 25, 23, 0.06),
         0 4px 14px -6px rgba(28, 25, 23, 0.12);
     }
-    .logo-mark.hero-halo {
-      box-shadow:
-        0 0 0 1px rgba(28, 25, 23, 0.05),
-        0 0 0 8px rgba(28, 25, 23, 0.03),
-        0 14px 40px -16px rgba(28, 25, 23, 0.20);
+    .nav-logo {
+      height: 42px;
+      width: auto;
+      display: block;
+      transition: transform 0.2s ease;
+    }
+    .nav-logo:hover { transform: scale(1.04); }
+    .hero-logo {
+      width: min(340px, 72vw);
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 14px 28px rgba(28, 25, 23, 0.14));
+    }
+    .half-figure {
+      width: 50%;
+      max-width: 50%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    @media (max-width: 768px) {
+      .half-figure {
+        width: 85%;
+        max-width: 85%;
+      }
     }
 
     .ftable {
@@ -316,9 +335,8 @@
   <nav class="fixed top-0 inset-x-0 z-50">
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
       <div class="mt-4 glass rounded-2xl px-5 py-3 flex items-center justify-between">
-        <a href="#top" class="flex items-center gap-3 group">
-          <div class="logo-mark w-10 h-10 text-sm group-hover:scale-105 transition-transform">D</div>
-          <span class="font-display font-semibold text-lg tracking-tight accent-text">DiverseAD</span>
+        <a href="#top" class="flex items-center gap-3 group" aria-label="DiverseAD">
+          <img src="./static/images/logo.png" alt="DiverseAD" class="nav-logo" />
         </a>
 
         <div class="hidden lg:flex items-center gap-7 text-sm font-medium text-ink-500">
@@ -352,7 +370,7 @@
 
     <div class="relative mx-auto max-w-6xl px-5 lg:px-8 text-center">
       <div class="flex justify-center mb-8 reveal">
-        <div class="logo-mark hero-halo w-28 h-28 lg:w-32 lg:h-32 text-4xl lg:text-5xl animate-float">D</div>
+        <img src="./static/images/logo.png" alt="DiverseAD Logo" class="hero-logo animate-float" />
       </div>
 
       <div class="flex justify-center mb-6 reveal">
@@ -702,7 +720,7 @@
         </p>
       </div>
 
-      <div class="reveal gradient-border p-3 lg:p-4 mb-10">
+      <div class="reveal gradient-border p-3 lg:p-4 mb-10 half-figure">
         <div class="rounded-2xl overflow-hidden bg-white">
           <img src="./static/images/vqa_pipeline.png" alt="VQA Pipeline" class="w-full" />
         </div>
@@ -759,7 +777,7 @@
         </p>
       </div>
 
-      <div class="reveal gradient-border p-3 lg:p-4 mb-12">
+      <div class="reveal gradient-border p-3 lg:p-4 mb-12 half-figure">
         <div class="rounded-2xl overflow-hidden bg-white">
           <img src="./static/images/framework.png" alt="Method Framework" class="w-full" />
         </div>
